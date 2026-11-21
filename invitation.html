@@ -367,7 +367,7 @@ tic(); minuteur = setInterval(tic, 1000);
 }
 function sCeremonies(){
 const ce = g(C,"ceremonies",{}); if (ce.actif === false) return "";
-const L = (ce.liste||[]).filter(x => x && x.afficher !== false && (x.date || x.lieu || x.heure));
+const L = (ce.liste||[]).filter(x => x && x.afficher !== false && (x.nom || x.date || x.lieu));
 if (!L.length) return "";
 const icone = {coutumier:"famille", civil:"mairie", religieux:"eglise"};
 return `<section id="ceremonies"><div class="cont">
@@ -377,6 +377,7 @@ ${entete(ce.petit||"Les cérémonies", esc(ce.titre||"Nos trois « oui »"), ce.
 ${x.date?`<p class="ligne">${ico("calendrier")}<span>${esc(fmtDate(x.date,{weekday:"long",day:"numeric",month:"long",year:"numeric"}).replace(/^./,c=>c.toUpperCase()))}</span></p>`:""}
 ${x.heure?`<p class="ligne">${ico("horloge")}<span>${esc(x.heure.replace(":","h"))}</span></p>`:""}
 ${x.lieu||x.adresse?`<p class="ligne">${ico("epingle")}<span>${esc([x.lieu,x.adresse].filter(Boolean).join(" · "))}</span></p>`:""}
+${!x.date&&!x.lieu?`<p class="ligne" style="font-style:italic;color:var(--doux)">Date et lieu bientôt communiqués.</p>`:""}
 ${x.date?`<button type="button" class="bt-cal" data-cer="${(ce.liste||[]).indexOf(x)}">${ico("calendrier")}Ajouter au calendrier</button>`:""}</div>`).join("")}</div>
 </div></section>`;
 }

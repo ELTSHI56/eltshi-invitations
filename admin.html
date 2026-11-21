@@ -251,7 +251,7 @@ const p = rendrePanneau(`<fieldset><legend>Section « Cérémonies »</legend>
 <label style="display:flex;gap:10px;align-items:center;cursor:pointer;margin:6px 0 12px"><input type="checkbox" id="cerActif" style="width:auto" ${ce.actif===false?"":"checked"}> <b>Afficher la section dans l'invitation</b></label>
 ${champ("ceremonies.titre","Titre de la section","text","Vide = Nos trois « oui »")}
 ${champ("ceremonies.sousTitre","Petite phrase sous le titre (facultatif)")}
-<p class="aide">La section apparaît juste après le compte à rebours. Une cérémonie sans date ni lieu ne s'affiche pas.</p></fieldset>
+<p class="aide">La section apparaît juste après le compte à rebours. Une cérémonie cochée « Afficher » apparaît même sans date ni lieu, avec la mention « Date et lieu bientôt communiqués ». Décochez-la si elle n'a pas lieu.</p></fieldset>
 ${ce.liste.map((x,i)=>`<fieldset><legend>${esc(x.nom||"Cérémonie")}</legend>
 <label style="display:flex;gap:8px;align-items:center;cursor:pointer;margin:4px 0 10px"><input type="checkbox" class="cerAff" data-i="${i}" style="width:auto" ${x.afficher===false?"":"checked"}> Afficher cette cérémonie</label>
 <div class="deux">${champ(`ceremonies.liste.${i}.nom`,"Nom")}${champ(`ceremonies.liste.${i}.sousTitre`,"Petite phrase (facultatif)")}</div>
