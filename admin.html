@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Administration — Invitations EL TSHI DIGIT</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Cormorant+Garamond:wght@500&family=Pinyon+Script&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--ivoire:#F8F4EC;--noir:#1A1A1A;--or:#B8975A;--champ:#E8D9BF;--ligne:#E3DACB;--doux:#7A7062;--ok:#2f7a4f;--ko:#9b3b2a;--violet:#4B2E83}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:Montserrat,system-ui,sans-serif;font-size:14px;background:var(--ivoire);color:var(--noir);line-height:1.5}
+h1,h2{font-family:"Cormorant Garamond",serif;font-weight:500}
+button,input,select,textarea{font:inherit;color:inherit}
+.btn{border:1px solid var(--noir);background:var(--noir);color:#fff;padding:10px 16px;cursor:pointer;border-radius:4px;font-size:13px;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn.clair{background:#fff;color:var(--noir);border-color:var(--ligne)}
+.btn.or{background:var(--or);border-color:var(--or)}
+.btn.danger{background:#fff;color:var(--ko);border-color:#e5c3bb}
+.btn.mini{padding:5px 9px;font-size:12px}
+.btn[disabled]{opacity:.55;cursor:wait}
+#connexion{min-height:100vh;display:grid;place-items:center;padding:20px}
+.carte-cx{background:#fff;border:1px solid var(--ligne);padding:34px 28px;width:100%;max-width:400px;border-radius:8px;text-align:center}
+.carte-cx h1{font-size:2rem;margin:10px 0 4px}
+.carte-cx p{color:var(--doux)}
+.carte-cx form{text-align:left;margin-top:24px}
+label.l{display:block;font-size:12px;font-weight:600;letter-spacing:.04em;margin:14px 0 6px}
+.aide{font-size:12px;color:var(--doux);margin-top:4px}
+input[type=text],input[type=password],input[type=date],input[type=time],input[type=number],select,textarea{width:100%;border:1px solid var(--ligne);background:#fff;border-radius:4px;padding:10px 11px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--or)}
+textarea{min-height:90px;resize:vertical}
+.msg{margin-top:12px;font-size:13px}
+.msg.ko{color:var(--ko)}.msg.ok{color:var(--ok)}
+.marque{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:26px;font-size:12px;color:var(--doux);text-decoration:none}
+.marque b{font-family:"Space Grotesk";color:var(--violet)}
+header.barre{position:sticky;top:0;z-index:20;background:var(--noir);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header.barre .titre{flex:1;min-width:160px}
+header.barre .titre b{font-family:"Cormorant Garamond",serif;font-size:1.3rem;font-weight:500;display:block;line-height:1.1}
+header.barre .titre small{color:#bdb3a2;font-size:11px}
+#etat{font-size:12px;color:#d4b67a}
+nav.onglets{display:flex;gap:2px;overflow-x:auto;background:#fff;border-bottom:1px solid var(--ligne);padding:0 10px;position:sticky;top:58px;z-index:19}
+nav.onglets button{border:0;background:none;padding:14px 14px;cursor:pointer;font-size:13px;font-weight:500;color:var(--doux);border-bottom:2px solid transparent;white-space:nowrap}
+nav.onglets button.actif{color:var(--noir);border-color:var(--or)}
+.zone{display:grid;grid-template-columns:1fr;gap:0}
+@media(min-width:1100px){.zone{grid-template-columns:minmax(0,1fr) 420px}.apercu{display:block!important}}
+.panneau{padding:20px 16px 90px;max-width:860px;width:100%;margin:0 auto}
+.apercu{display:none;position:sticky;top:106px;height:calc(100vh - 106px);border-left:1px solid var(--ligne);background:#ddd}
+.apercu iframe{width:100%;height:100%;border:0;background:#fff}
+.apercu.plein{display:block!important;position:fixed;inset:0;z-index:50;height:100vh;top:0}
+.apercu .fermer-ap{display:none;position:absolute;top:10px;right:10px;z-index:2}
+.apercu.plein .fermer-ap{display:inline-flex}
+fieldset{border:1px solid var(--ligne);background:#fff;border-radius:8px;padding:6px 18px 18px;margin-bottom:18px}
+legend{font-family:"Cormorant Garamond",serif;font-size:1.3rem;padding:0 6px}
+.deux{display:grid;gap:0 14px}
+@media(min-width:620px){.deux{grid-template-columns:1fr 1fr}.trois{grid-template-columns:1fr 1fr 1fr}}
+.item{border:1px solid var(--ligne);border-radius:6px;padding:12px 14px;margin-top:12px;background:#fdfbf7}
+.item .outils{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;margin-top:10px}
+.item .entete-item{display:flex;align-items:center;gap:8px;font-weight:600}
+.item .entete-item span{flex:1}
+.cases{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px}
+.cases label{display:flex;align-items:center;gap:6px;font-size:13px}
+.photo-slot{display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--ligne)}
+.photo-slot:last-child{border:0}
+.vignette{width:84px;height:84px;border-radius:6px;background:var(--champ) center/cover;flex-shrink:0;display:grid;place-items:center;color:#fff;font-size:11px;text-align:center}
+.photo-slot .info{flex:1}
+.galerie-adm{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:12px}
+.galerie-adm .g{border:1px solid var(--ligne);border-radius:6px;overflow:hidden;background:#fff}
+.galerie-adm .g .vignette{width:100%;height:120px;border-radius:0}
+.galerie-adm .g input{border:0;border-top:1px solid var(--ligne);border-radius:0;font-size:12px}
+.galerie-adm .g .outils{display:flex;justify-content:space-between;padding:6px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:#fff;border:1px solid var(--ligne);border-radius:8px;padding:14px}
+.stat b{display:block;font-family:"Cormorant Garamond",serif;font-size:2.2rem;line-height:1}
+.stat span{font-size:12px;color:var(--doux)}
+.table-wrap{overflow-x:auto;background:#fff;border:1px solid var(--ligne);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:10px;border-bottom:1px solid var(--ligne);text-align:left;vertical-align:top}
+th{background:#faf6ee;font-size:12px;white-space:nowrap}
+td .det{font-size:12px;color:var(--doux)}
+.oui{color:var(--ok);font-weight:600}.non{color:var(--ko);font-weight:600}
+.barre-outils{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.barre-outils input{flex:1;min-width:180px}
+.bas{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--ligne);padding:10px 16px;display:flex;gap:10px;justify-content:flex-end;z-index:18}
+#toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:var(--noir);color:#fff;padding:10px 18px;border-radius:4px;opacity:0;transition:opacity .3s;z-index:90;pointer-events:none}
+#toast.vu{opacity:1}
+.lien-box{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#faf6ee;border:1px dashed var(--or);padding:10px 12px;border-radius:6px;margin:8px 0;word-break:break-all}
+@media print{header,nav,.bas,.barre-outils,.apercu,.suppr{display:none!important}.panneau{padding:0}body{background:#fff}}
+</style>
+</head>
+<body>
+<div id="toast" role="status"></div>
+<section id="connexion">
+<div class="carte-cx">
+<p style="font-size:11px;letter-spacing:.3em;color:var(--or)">ESPACE ORGANISATEURS</p>
+<h1>Administration</h1>
+<p>Modifiez votre invitation et consultez les réponses.</p>
+<form id="formCx">
+<label class="l" for="cxSlug">Adresse de l'invitation</label>
+<input type="text" id="cxSlug" placeholder="ex. elie-achou" autocapitalize="off" autocomplete="username" required>
+<p class="aide">C'est la fin du lien : …vercel.app/<b>elie-achou</b></p>
+<label class="l" for="cxCode">Code d'accès</label>
+<input type="password" id="cxCode" autocomplete="current-password" required>
+<p class="msg ko" id="cxMsg" hidden></p>
+<button class="btn" style="width:100%;justify-content:center;margin-top:18px" id="cxBtn">Se connecter</button>
+</form>
+<a class="marque" href="https://wa.me/243844195449" target="_blank" rel="noopener">Réalisé par <b>EL TSHI DIGIT</b>+243 844 195 449</a>
+</div>
+</section>
+<div id="ui" hidden>
+<header class="barre">
+<div class="titre"><b id="hTitre"></b><small id="hSlug"></small></div>
+<span id="etat"></span>
+<a class="btn clair mini" id="voir" target="_blank" rel="noopener">Voir l'invitation ↗</a>
+<button class="btn clair mini" id="btnApercu" type="button">Aperçu</button>
+<button class="btn clair mini" id="deco" type="button">Déconnexion</button>
+</header>
+<nav class="onglets" id="onglets"></nav>
+<div class="zone">
+<div class="panneau" id="panneau"></div>
+<div class="apercu" id="apercu"><button class="btn mini fermer-ap" type="button" id="fermerAp">Fermer l'aperçu ✕</button><iframe id="ifr" title="Aperçu de l'invitation"></iframe></div>
+</div>
+<div class="bas" id="bas"><span class="aide" style="flex:1;align-self:center" id="basInfo">Les modifications sont visibles par les invités après enregistrement.</span><button class="btn or" id="sauver" type="button">Enregistrer les modifications</button></div>
+</div>
+<script>
+const SB = { url: "https://vtizxpfxsozbotvkjsrg.supabase.co", cle: "sb_publishable_kPpkOa8UqHiuaSqsF6GqGQ_36GJcKt8" };
+const ICONES = {accueil:"Accueil",alliances:"Alliances",photo:"Appareil photo",cocktail:"Cocktail",micro:"Micro / discours",diner:"Dîner",musique:"Musique",lune:"Lune / fin",coeur:"Cœur",gateau:"Gâteau",etoile:"Étoile",eglise:"Église",voiture:"Voiture",horloge:"Horloge",calendrier:"Calendrier",epingle:"Lieu"};
+const ERR = {CODE_INCORRECT:"Code d'accès incorrect.",CODE_MAITRE_INCORRECT:"Code maître incorrect.",ADRESSE_INVALIDE:"Adresse invalide : lettres minuscules, chiffres et tirets uniquement (3 à 60).",ADRESSE_DEJA_PRISE:"Cette adresse est déjà utilisée.",ADRESSE_RESERVEE:"Ce mot est réservé, choisissez une autre adresse.",NUMERO_INVALIDE:"Numéro invalide : indiquez le numéro complet avec l'indicatif (ex. +243 844 195 449).",CODE_CLIENT_TROP_COURT:"Le code client doit faire au moins 6 caractères.",CONFIG_TROP_GRANDE:"Contenu trop volumineux.",FORMAT_NON_ACCEPTE:"Format non accepté (JPG, PNG ou WEBP).",TAILLE_INVALIDE:"Photo trop lourde."};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+function toast(t){ const e=$("#toast"); e.textContent=t; e.classList.add("vu"); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove("vu"),2600); }
+function get(o,p){ return p.split(".").reduce((a,k)=>a==null?undefined:a[k],o); }
+function set(o,p,v){ const ks=p.split("."); let a=o; ks.slice(0,-1).forEach(k=>{ if(typeof a[k]!=="object"||a[k]===null) a[k]={}; a=a[k]; }); a[ks.at(-1)]=v; }
+async function rpc(fn,args){
+const r = await fetch(`${SB.url}/rest/v1/rpc/${fn}`,{method:"POST",headers:{"Content-Type":"application/json",apikey:SB.cle,Authorization:"Bearer "+SB.cle},body:JSON.stringify(args)});
+const t = await r.text(); let j=null; try{ j=t?JSON.parse(t):null; }catch{}
+if(!r.ok) throw new Error((j&&j.message)||"RESEAU");
+return j;
+}
+const msgErr = e => ERR[e.message] || (e.message==="RESEAU"||e.message==="Failed to fetch" ? "Problème de connexion internet. Réessayez." : "Erreur : "+e.message);
+let S = { slug:"", code:"", maitre:false, ev:null, cfg:{}, sale:false, onglet:"textes", reponses:[] };
+(function init(){
+const q = new URLSearchParams(location.search);
+let mem = null; try{ mem = JSON.parse(sessionStorage.getItem("adm")||"null"); }catch{}
+$("#cxSlug").value = q.get("e") || (mem&&mem.slug) || "";
+if (mem && (!q.get("e") || q.get("e")===mem.slug)) connecter(mem.slug, mem.code, true);
+})();
+$("#formCx").addEventListener("submit", e => { e.preventDefault(); connecter($("#cxSlug").value.trim().toLowerCase(), $("#cxCode").value.trim()); });
+async function connecter(slug, code, silencieux){
+const m=$("#cxMsg"); m.hidden=true; const b=$("#cxBtn"); b.disabled=true;
+try{
+const ev = await rpc("config_admin",{p_slug:slug,p_code:code});
+slug = ev.slug;
+S = {...S, slug, code, maitre:!!ev.maitre, ev, acces:ev.acces||{}, cfg:clone(ev.config||{}), sale:false};
+try{ sessionStorage.setItem("adm", JSON.stringify({slug,code})); }catch{}
+demarrerUI();
+}catch(e){ if(!silencieux){ m.textContent = e.message==="CODE_INCORRECT" ? "Adresse ou code incorrect." : msgErr(e); m.hidden=false; } }
+finally{ b.disabled=false; }
+}
+$("#deco").onclick = () => { if(S.sale && !confirm("Des modifications ne sont pas enregistrées. Quitter quand même ?")) return; try{sessionStorage.removeItem("adm");}catch{} location.href = location.pathname; };
+window.addEventListener("beforeunload", e => { if(S.sale){ e.preventDefault(); e.returnValue=""; } });
+const ONGLETS = [["textes","Textes"],["programme","Programme"],["infos","Lieu & infos"],["photos","Photos"],["formulaire","Formulaire"],["reponses","Réponses"],["reglages","Partage & réglages"]];
+function demarrerUI(){
+$("#connexion").hidden = true; $("#ui").hidden = false;
+$("#hTitre").textContent = S.ev.titre; $("#hSlug").textContent = "/" + S.slug + (S.maitre ? " · accès maître" : "");
+$("#voir").href = lienOfficiel();
+const ong = [...ONGLETS, ...(S.maitre ? [["invitations","Mes invitations ★"]] : [])];
+$("#onglets").innerHTML = ong.map(([k,t]) => `<button type="button" data-o="${k}">${t}</button>`).join("");
+$("#onglets").onclick = e => { const b=e.target.closest("button"); if(b) ouvrirOnglet(b.dataset.o); };
+$("#ifr").src = srcApercu();
+$("#ifr").onload = () => setTimeout(envoyerApercu, 400);
+ouvrirOnglet(new URLSearchParams(location.search).get("onglet") || "textes");
+majEtat();
+}
+function ouvrirOnglet(k){
+S.onglet = k;
+document.querySelectorAll("#onglets button").forEach(b => b.classList.toggle("actif", b.dataset.o===k));
+$("#bas").hidden = ["reponses","invitations"].includes(k);
+({textes:oTextes, programme:oProgramme, infos:oInfos, photos:oPhotos, formulaire:oFormulaire, reponses:oReponses, reglages:oReglages, invitations:oInvitations}[k] || oTextes)();
+}
+const lienOfficiel = () => location.origin + "/" + S.slug + (S.acces && S.acces.protege ? "?k=" + S.acces.cle : "");
+const srcApercu = () => "/" + S.slug + "?direct=1" + (S.acces && S.acces.cle ? "&k=" + S.acces.cle : "");
+function modifie(){ S.sale = true; majEtat(); clearTimeout(modifie.t); modifie.t = setTimeout(envoyerApercu, 350); }
+function majEtat(){ $("#etat").textContent = S.sale ? "● Modifications non enregistrées" : "✓ Tout est enregistré"; }
+function envoyerApercu(){ try{ $("#ifr").contentWindow.postMessage({type:"apercu", config:S.cfg, ouvrir:true}, location.origin); }catch{} }
+$("#btnApercu").onclick = () => { $("#apercu").classList.add("plein"); envoyerApercu(); };
+$("#fermerAp").onclick = () => $("#apercu").classList.remove("plein");
+$("#sauver").onclick = sauver;
+async function sauver(){
+const b=$("#sauver"); b.disabled=true; b.textContent="Enregistrement…";
+try{ await rpc("sauver_config",{p_slug:S.slug,p_code:S.code,p_config:S.cfg}); S.sale=false; majEtat(); toast("Modifications enregistrées ✓"); }
+catch(e){ alert(msgErr(e)); }
+finally{ b.disabled=false; b.textContent="Enregistrer les modifications"; }
+}
+function champ(path, label, type="text", aide="", attrs=""){
+const v = get(S.cfg, path) ?? "";
+const id = "f_" + path.replace(/\./g,"_");
+const inp = type==="textarea" ? `<textarea id="${id}" data-p="${path}" ${attrs}>${esc(v)}</textarea>` : `<input type="${type}" id="${id}" data-p="${path}" value="${esc(v)}" ${attrs}>`;
+return `<div><label class="l" for="${id}">${label}</label>${inp}${aide?`<p class="aide">${aide}</p>`:""}</div>`;
+}
+function lier(racine){ racine.querySelectorAll("[data-p]").forEach(el => el.addEventListener("input", () => { set(S.cfg, el.dataset.p, el.value); modifie(); })); }
+function rendrePanneau(html){ const p=$("#panneau"); p.innerHTML = html; lier(p); window.scrollTo({top:0}); return p; }
+function oTextes(){
+rendrePanneau(`
+<fieldset><legend>Le couple / les hôtes</legend><div class="deux">
+${champ("couple.prenom1","Prénom 1")}${champ("couple.prenom2","Prénom 2")}
+${champ("couple.nomsComplets","Noms complets","text","Affiché sous la présentation.")}${champ("couple.hashtag","Hashtag (facultatif)")}
+</div></fieldset>
+<fieldset><legend>Date et heure</legend><div class="deux trois">
+${champ("date.jour","Date de l'événement","date")}${champ("date.heure","Heure de début","time","Laisser vide si pas encore fixée.")}${champ("date.heureFin","Heure de fin","time")}
+</div></fieldset>
+<fieldset><legend>1 · Couverture</legend>
+${champ("couverture.surtitre","Surtitre")}${champ("couverture.citation","Phrase sous la date")}${champ("couverture.bouton","Texte du bouton")}
+</fieldset>
+<fieldset><legend>2 · Présentation</legend><div class="deux">
+${champ("presentation.titre","Titre")}${champ("presentation.sousTitre","Sous-titre (en calligraphie)")}</div>
+${champ("presentation.message","Message d'accueil","textarea")}
+</fieldset>
+<fieldset><legend>3 · Compte à rebours</legend><div class="deux">
+${champ("compte.titre","Titre")}${champ("compte.fin","Message quand l'événement commence")}</div>
+</fieldset>
+<fieldset><legend>Titres des sections</legend><div class="deux">
+${champ("programme.titre","Programme — titre")}${champ("programme.sousTitre","Programme — sous-titre")}
+${champ("galerie.titre","Galerie — titre")}${champ("galerie.sousTitre","Galerie — sous-titre")}
+${champ("pratique.titre","Infos pratiques — titre")}
+</div></fieldset>
+<fieldset><legend>7 · Formulaire de confirmation</legend>
+${champ("rsvp.titre","Titre")}${champ("rsvp.sousTitre","Sous-titre")}
+<div class="deux">${champ("rsvp.dateLimite","Date limite de réponse","date")}${champ("rsvp.bouton","Texte du bouton")}</div>
+</fieldset>
+<fieldset><legend>8 · Page de remerciement</legend>
+${champ("merci.titre","Titre")}${champ("merci.texte","Texte","textarea")}${champ("merci.signature","Formule de fin")}
+</fieldset>
+<fieldset><legend>9 · Page finale</legend><div class="deux">
+${champ("finale.haut","Petit texte du haut")}${champ("finale.grand","Grand texte")}
+${champ("finale.limite","Ligne date limite")}${champ("finale.bouton","Texte du bouton")}
+${champ("finale.script","Mot en calligraphie")}</div>
+</fieldset>
+<fieldset><legend>Partage</legend>
+${champ("partage.message","Message envoyé avec le lien WhatsApp","textarea")}${champ("meta.titreOnglet","Titre de l'onglet du navigateur")}
+</fieldset>`);
+}
+function oProgramme(){
+if (!Array.isArray(get(S.cfg,"programme.etapes"))) set(S.cfg,"programme.etapes",[]);
+const et = S.cfg.programme.etapes;
+const p = rendrePanneau(`<fieldset><legend>Étapes du programme</legend>
+<p class="aide">Indiquez l'heure de chaque étape quand elle est connue. Sans heure, l'étape s'affiche sans horaire.</p>
+<div id="listeEt">${et.map((e,i)=>`<div class="item">
+<div class="entete-item"><span>Étape ${i+1}</span></div>
+<div class="deux">
+<div><label class="l">Heure</label><input type="time" data-p="programme.etapes.${i}.heure" value="${esc(e.heure)}"></div>
+<div><label class="l">Icône</label><select data-i="${i}" class="selIc">${Object.entries(ICONES).map(([k,t])=>`<option value="${k}" ${k===e.icone?"selected":""}>${t}</option>`).join("")}</select></div>
+</div>
+<label class="l">Titre</label><input type="text" data-p="programme.etapes.${i}.titre" value="${esc(e.titre)}">
+<label class="l">Description (facultatif)</label><input type="text" data-p="programme.etapes.${i}.description" value="${esc(e.description)}">
+<div class="outils"><button class="btn clair mini" data-a="haut" data-i="${i}" ${i?"":"disabled"}>↑</button><button class="btn clair mini" data-a="bas" data-i="${i}" ${i<et.length-1?"":"disabled"}>↓</button><button class="btn danger mini" data-a="suppr" data-i="${i}">Supprimer</button></div>
+</div>`).join("")}</div>
+<button class="btn clair" style="margin-top:14px" id="ajEt" type="button">+ Ajouter une étape</button></fieldset>`);
+p.querySelectorAll(".selIc").forEach(s => s.onchange = () => { et[+s.dataset.i].icone = s.value; modifie(); });
+p.querySelectorAll("[data-a]").forEach(b => b.onclick = () => { const i=+b.dataset.i;
+if (b.dataset.a==="suppr") { if(!confirm("Supprimer cette étape ?")) return; et.splice(i,1); }
+if (b.dataset.a==="haut") [et[i-1],et[i]] = [et[i],et[i-1]];
+if (b.dataset.a==="bas") [et[i+1],et[i]] = [et[i],et[i+1]];
+modifie(); oProgramme(); });
+$("#ajEt").onclick = () => { et.push({heure:"",titre:"Nouvelle étape",description:"",icone:"coeur"}); modifie(); oProgramme(); };
+}
+function oInfos(){
+rendrePanneau(`<fieldset><legend>Lieu de la réception</legend>
+${champ("lieu.nom","Nom du lieu","text","Ex. : Salle des fêtes …")}
+${champ("lieu.adresse","Adresse complète","text","Utilisée pour la carte Google Maps et le bouton « Obtenir l'itinéraire ». Ex. : Avenue …, Kisangani")}
+</fieldset>
+<fieldset><legend>Informations pratiques</legend>
+${champ("pratique.transport","Transport","textarea","Laisser vide pour afficher « Informations à venir ».")}
+${champ("pratique.hebergement","Hébergement","textarea")}
+${champ("pratique.tenue","Tenue / code vestimentaire (facultatif)","textarea","Si vide, la carte n'est pas affichée.")}
+</fieldset>`);
+}
+async function reduire(fichier){
+const img = await new Promise((ok,ko)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=ko; i.src=URL.createObjectURL(fichier); });
+const max=1600, r=Math.min(1, max/Math.max(img.width,img.height));
+const c=document.createElement("canvas"); c.width=Math.round(img.width*r); c.height=Math.round(img.height*r);
+c.getContext("2d").drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(img.src);
+return c.toDataURL("image/jpeg",0.85);
+}
+async function envoyerPhoto(fichier, dataDeja){
+const data = dataDeja || await reduire(fichier);
+const r = await fetch(`${SB.url}/functions/v1/photo`,{method:"POST",headers:{"Content-Type":"application/json",apikey:SB.cle},body:JSON.stringify({slug:S.slug,code:S.code,type:"image/jpeg",data})});
+const j = await r.json().catch(()=>({}));
+if(!r.ok||!j.url) throw new Error(j.erreur||"RESEAU");
+return j.url;
+}
+function chargerImage(src){ return new Promise((ok,ko)=>{ const i=new Image(); i.crossOrigin="anonymous"; i.onload=()=>ok(i); i.onerror=()=>ko(new Error("IMAGE_ILLISIBLE")); i.src=src; }); }
+async function composerApercu(source){
+const img = await chargerImage(typeof source==="string" ? source : URL.createObjectURL(source));
+try { await document.fonts.load('92px "Pinyon Script"'); await document.fonts.load('600 20px Montserrat'); } catch {}
+const W=1200,H=630,c=document.createElement("canvas"); c.width=W; c.height=H; const x=c.getContext("2d");
+const r=Math.max(W/img.width,H/img.height), w=img.width*r, h=img.height*r;
+x.drawImage(img,(W-w)/2,(H-h)/2.6,w,h);
+const gr=x.createLinearGradient(0,0,0,H); gr.addColorStop(0,"rgba(0,0,0,.08)"); gr.addColorStop(.5,"rgba(0,0,0,.18)"); gr.addColorStop(1,"rgba(0,0,0,.72)");
+x.fillStyle=gr; x.fillRect(0,0,W,H);
+x.strokeStyle="rgba(212,182,122,.8)"; x.lineWidth=2; x.strokeRect(20,20,W-40,H-40);
+x.strokeStyle="rgba(212,182,122,.4)"; x.lineWidth=1; x.strokeRect(30,30,W-60,H-60);
+x.textAlign="center"; x.shadowColor="rgba(0,0,0,.5)"; x.shadowBlur=18;
+const p1=get(S.cfg,"couple.prenom1")||"", p2=get(S.cfg,"couple.prenom2")||"";
+x.fillStyle="#D4B67A"; x.font='600 19px Montserrat, Arial, sans-serif';
+const sur=(get(S.cfg,"couverture.surtitre")||"").toUpperCase(); if (x.letterSpacing!==undefined) x.letterSpacing="6px"; x.fillText(sur,W/2,438);
+if (x.letterSpacing!==undefined) x.letterSpacing="0px";
+x.fillStyle="#fff"; x.font='92px "Pinyon Script", cursive'; x.fillText(`${p1} & ${p2}`,W/2,530);
+const j=get(S.cfg,"date.jour"); if (j) { x.fillStyle="#E8D9BF"; x.font='500 20px Montserrat, Arial, sans-serif'; if (x.letterSpacing!==undefined) x.letterSpacing="7px";
+x.fillText(new Date(j+"T12:00:00").toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"}).toUpperCase(),W/2,583); }
+if (typeof source!=="string") URL.revokeObjectURL(img.src);
+return c.toDataURL("image/jpeg",0.82);
+}
+async function genererApercu(source){
+const m=$("#msgAp"); m.className="msg"; m.textContent="Création de l'image d'aperçu…";
+try { const data = await composerApercu(source); set(S.cfg,"partage.image", await envoyerPhoto(null, data)); modifie(); toast("Image d'aperçu créée — pensez à enregistrer"); oPhotos(); }
+catch(e){ m.className="msg ko"; m.textContent = e.message==="IMAGE_ILLISIBLE" ? "Impossible de lire cette photo. Choisissez-la depuis votre téléphone avec le bouton « Depuis une photo »." : msgErr(e); }
+}
+function oPhotos(){
+const slots = [["couverture.photo","Photo de couverture","Affichée en noir et blanc, plein écran."],["presentation.photo","Photo de présentation","Cadre en arche."],["merci.photo","Photo de remerciement","Affichée après la confirmation (sinon la photo de présentation)."]];
+if (!Array.isArray(get(S.cfg,"galerie.photos"))) set(S.cfg,"galerie.photos",[]);
+const gal = S.cfg.galerie.photos;
+const p = rendrePanneau(`<fieldset><legend>Photos principales</legend>
+${slots.map(([pa,t,a])=>{ const u=get(S.cfg,pa); return `<div class="photo-slot"><div class="vignette" style="${u?`background-image:url('${esc(u)}')`:""}">${u?"":"Aucune"}</div>
+<div class="info"><b>${t}</b><p class="aide">${a}</p><div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+<label class="btn clair mini">Choisir une photo<input type="file" accept="image/*" hidden data-slot="${pa}"></label>${u?`<button class="btn danger mini" data-retirer="${pa}" type="button">Retirer</button>`:""}</div></div></div>`; }).join("")}
+</fieldset>
+<fieldset><legend>Photo d'aperçu du lien (WhatsApp, Facebook…)</legend>
+<p class="aide">C'est l'image qui s'affiche quand le lien de l'invitation est partagé. Elle est créée automatiquement au bon format (1200 × 630) avec vos prénoms et la date dès que vous ajoutez la photo de couverture. Vous pouvez aussi la refaire ou choisir une autre photo.</p>
+<div class="photo-slot"><div class="vignette" style="width:190px;height:100px;${get(S.cfg,"partage.image")?`background-image:url('${esc(get(S.cfg,"partage.image"))}')`:""}">${get(S.cfg,"partage.image")?"":"Pas encore créée"}</div>
+<div class="info"><div style="display:flex;gap:6px;flex-wrap:wrap">
+${get(S.cfg,"couverture.photo")||get(S.cfg,"presentation.photo")?`<button class="btn mini" type="button" id="apAuto">Créer depuis la photo du couple</button>`:""}
+<label class="btn clair mini">Depuis une photo<input type="file" accept="image/*" hidden id="apFichier"></label>
+${get(S.cfg,"partage.image")?`<button class="btn danger mini" data-retirer="partage.image" type="button">Retirer</button>`:""}</div>
+<p class="msg" id="msgAp"></p></div></div>
+</fieldset>
+<fieldset><legend>Galerie (${gal.length} photo${gal.length>1?"s":""})</legend>
+<label class="btn" style="margin-top:6px">+ Ajouter des photos<input type="file" accept="image/*" multiple hidden id="ajGal"></label>
+<p class="aide">Vous pouvez en sélectionner plusieurs. Elles sont réduites automatiquement avant l'envoi.</p>
+<p class="msg" id="msgPh"></p>
+<div class="galerie-adm">${gal.map((g,i)=>`<div class="g"><div class="vignette" style="background-image:url('${esc(g.url)}')"></div>
+<input type="text" placeholder="Légende (facultatif)" data-p="galerie.photos.${i}.legende" value="${esc(g.legende)}">
+<div class="outils"><span><button class="btn clair mini" data-a="haut" data-i="${i}" ${i?"":"disabled"}>←</button> <button class="btn clair mini" data-a="bas" data-i="${i}" ${i<gal.length-1?"":"disabled"}>→</button></span><button class="btn danger mini" data-a="suppr" data-i="${i}">✕</button></div></div>`).join("")}</div>
+</fieldset>`);
+const occupe = t => { $("#msgPh").className="msg"; $("#msgPh").textContent=t; };
+p.querySelectorAll("[data-slot]").forEach(inp => inp.onchange = async () => {
+const f=inp.files[0]; if(!f) return; occupe("Envoi de la photo…");
+try{ const url = await envoyerPhoto(f); set(S.cfg, inp.dataset.slot, url); modifie(); toast("Photo ajoutée — pensez à enregistrer"); oPhotos();
+if (inp.dataset.slot==="couverture.photo" || (inp.dataset.slot==="presentation.photo" && !get(S.cfg,"couverture.photo"))) { if (get(S.cfg,"partage.auto")===false && get(S.cfg,"partage.image")) return; await genererApercu(f); set(S.cfg,"partage.auto",true); }
+}catch(e){ alert(msgErr(e)); occupe(""); }
+});
+if ($("#apAuto")) $("#apAuto").onclick = () => genererApercu(get(S.cfg,"couverture.photo")||get(S.cfg,"presentation.photo"));
+$("#apFichier").onchange = async e => { const f=e.target.files[0]; if (f) { await genererApercu(f); set(S.cfg,"partage.auto",false); } };
+p.querySelectorAll("[data-retirer]").forEach(b => b.onclick = () => { set(S.cfg, b.dataset.retirer, ""); modifie(); oPhotos(); });
+$("#ajGal").onchange = async e => {
+const fs=[...e.target.files]; let n=0;
+for (const f of fs) { occupe(`Envoi ${++n}/${fs.length}…`); try{ gal.push({url:await envoyerPhoto(f), legende:""}); modifie(); }catch(err){ alert(`${f.name} : ${msgErr(err)}`); } }
+toast("Photos ajoutées — pensez à enregistrer"); oPhotos();
+};
+p.querySelectorAll(".galerie-adm [data-a]").forEach(b => b.onclick = () => { const i=+b.dataset.i;
+if (b.dataset.a==="suppr") { if(!confirm("Retirer cette photo de la galerie ?")) return; gal.splice(i,1); }
+if (b.dataset.a==="haut") [gal[i-1],gal[i]]=[gal[i],gal[i-1]];
+if (b.dataset.a==="bas") [gal[i+1],gal[i]]=[gal[i],gal[i+1]];
+modifie(); oPhotos(); });
+}
+function oFormulaire(){
+if (!Array.isArray(get(S.cfg,"rsvp.questions"))) set(S.cfg,"rsvp.questions",[]);
+const qs = S.cfg.rsvp.questions, tel = get(S.cfg,"rsvp.telephone")||"facultatif";
+const types = {texte:"Réponse courte",paragraphe:"Réponse longue",choix:"Choix (boutons)",nombre:"Nombre"};
+const p = rendrePanneau(`<fieldset><legend>Champs fixes</legend>
+<p class="aide">« Nom complet » et « Serez-vous présent(e) ? » sont toujours demandés. Une famille ne peut répondre qu'une seule fois (même nom ou même numéro).</p>
+<label class="l" for="selTel">Numéro de téléphone</label>
+<select id="selTel"><option value="facultatif" ${tel==="facultatif"?"selected":""}>Demandé, facultatif</option><option value="obligatoire" ${tel==="obligatoire"?"selected":""}>Obligatoire</option><option value="masque" ${tel==="masque"?"selected":""}>Ne pas demander</option></select>
+</fieldset>
+<fieldset><legend>Questions</legend>
+${qs.map((q,i)=>`<div class="item">
+<div class="entete-item"><span>Question ${i+1}</span></div>
+<label class="l">Intitulé</label><input type="text" data-p="rsvp.questions.${i}.label" value="${esc(q.label)}">
+<div class="deux">
+<div><label class="l">Type de réponse</label><select data-k="type" data-i="${i}">${Object.entries(types).map(([k,t])=>`<option value="${k}" ${k===q.type?"selected":""}>${t}</option>`).join("")}</select></div>
+<div><label class="l">Utilisation spéciale</label><select data-k="role" data-i="${i}"><option value="">—</option><option value="total" ${q.role==="total"?"selected":""}>Nombre total de personnes</option><option value="message" ${q.role==="message"?"selected":""}>Message au couple</option></select></div>
+</div>
+${q.type==="choix"?`<label class="l">Options (séparées par des virgules)</label><input type="text" data-k="options" data-i="${i}" value="${esc((q.options||[]).join(", "))}">`:""}
+${q.type==="nombre"?`<div class="deux"><div><label class="l">Minimum</label><input type="number" data-k="min" data-i="${i}" value="${q.min??1}"></div><div><label class="l">Maximum</label><input type="number" data-k="max" data-i="${i}" value="${q.max??20}"></div></div>`:""}
+<div class="cases">
+<label><input type="checkbox" data-k="obligatoire" data-i="${i}" ${q.obligatoire?"checked":""}> Obligatoire</label>
+<label><input type="checkbox" data-k="siPresent" data-i="${i}" ${q.siPresent?"checked":""}> Seulement si présent(e)</label>
+${q.type==="choix"?`<label><input type="checkbox" data-k="autre" data-i="${i}" ${q.autre?"checked":""}> Ajouter « Autre » + précision</label>`:""}
+</div>
+<div class="deux">
+<div><label class="l">Afficher seulement si la question…</label><select data-k="condId" data-i="${i}"><option value="">(toujours afficher)</option>${qs.filter((x,j)=>j!==i&&x.type==="choix").map(x=>`<option value="${esc(x.id)}" ${q.condition&&q.condition.id===x.id?"selected":""}>${esc(x.label)}</option>`).join("")}</select></div>
+<div><label class="l">…a pour réponse</label><input type="text" data-k="condVal" data-i="${i}" value="${esc(q.condition?q.condition.valeur:"")}" placeholder="ex. Oui"></div>
+</div>
+<div class="outils"><button class="btn clair mini" data-a="haut" data-i="${i}" ${i?"":"disabled"}>↑</button><button class="btn clair mini" data-a="bas" data-i="${i}" ${i<qs.length-1?"":"disabled"}>↓</button><button class="btn danger mini" data-a="suppr" data-i="${i}">Supprimer</button></div>
+</div>`).join("")}
+<button class="btn clair" style="margin-top:14px" id="ajQ" type="button">+ Ajouter une question</button>
+</fieldset>`);
+$("#selTel").onchange = e => { set(S.cfg,"rsvp.telephone",e.target.value); modifie(); };
+p.querySelectorAll("[data-k]").forEach(el => {
+const ev = el.tagName==="SELECT"||el.type==="checkbox" ? "change" : "input";
+el.addEventListener(ev, () => {
+const q = qs[+el.dataset.i], k = el.dataset.k;
+if (k==="obligatoire"||k==="siPresent"||k==="autre") q[k] = el.checked;
+else if (k==="options") q.options = el.value.split(",").map(s=>s.trim()).filter(Boolean);
+else if (k==="min"||k==="max") q[k] = parseInt(el.value,10)||0;
+else if (k==="role") { if (el.value) { qs.forEach(x=>{ if(x!==q && x.role===el.value) delete x.role; }); q.role = el.value; } else delete q.role; }
+else if (k==="condId") { if (el.value) q.condition = {id:el.value, valeur:(q.condition&&q.condition.valeur)||"Oui"}; else delete q.condition; }
+else if (k==="condVal") { if (q.condition) q.condition.valeur = el.value.trim(); }
+else q[k] = el.value;
+modifie();
+if (["type","role","condId"].includes(k)) oFormulaire();
+});
+});
+p.querySelectorAll(".item [data-a]").forEach(b => b.onclick = () => { const i=+b.dataset.i;
+if (b.dataset.a==="suppr") { if(!confirm("Supprimer cette question ? Les réponses déjà reçues restent conservées.")) return; const id=qs[i].id; qs.splice(i,1); qs.forEach(x=>{ if(x.condition&&x.condition.id===id) delete x.condition; }); }
+if (b.dataset.a==="haut") [qs[i-1],qs[i]]=[qs[i],qs[i-1]];
+if (b.dataset.a==="bas") [qs[i+1],qs[i]]=[qs[i],qs[i+1]];
+modifie(); oFormulaire(); });
+$("#ajQ").onclick = () => { qs.push({id:"q"+Date.now().toString(36), type:"texte", label:"Nouvelle question", obligatoire:false, siPresent:true}); modifie(); oFormulaire(); };
+}
+async function oReponses(){
+const p = rendrePanneau(`<div class="stats" id="stats"><div class="stat"><b>…</b><span>Chargement</span></div></div>
+<div class="barre-outils"><input type="text" id="filtre" placeholder="Rechercher un nom, un numéro…"><select id="filtreP" style="width:auto"><option value="">Tous</option><option value="oui">Présents</option><option value="non">Absents</option></select>
+<button class="btn clair" id="rafr" type="button">Actualiser</button><button class="btn clair" id="csv" type="button">Exporter (Excel/CSV)</button><button class="btn clair" type="button" onclick="print()">Imprimer</button></div>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Nom</th><th>Présence</th><th>Pers.</th><th>Téléphone</th><th>Détails</th><th>Message</th><th>Reçu le</th><th class="suppr"></th></tr></thead><tbody id="tb"><tr><td colspan="9">Chargement…</td></tr></tbody></table></div>`);
+const charger = async () => {
+try { S.reponses = await rpc("liste_reponses",{p_evenement:S.slug,p_code:S.code}) || []; afficher(); }
+catch(e){ $("#tb").innerHTML = `<tr><td colspan="9" class="non">${esc(msgErr(e))}</td></tr>`; }
+};
+const afficher = () => {
+const R = S.reponses, pres = R.filter(r=>r.presence), abs = R.filter(r=>!r.presence);
+const pers = pres.reduce((s,r)=>s+(r.total||0),0);
+$("#stats").innerHTML = `<div class="stat"><b>${pers}</b><span>Personnes attendues</span></div><div class="stat"><b>${pres.length}</b><span>Réponses « présent »</span></div><div class="stat"><b>${abs.length}</b><span>Réponses « absent »</span></div><div class="stat"><b>${R.length}</b><span>Réponses au total</span></div>`;
+const f = $("#filtre").value.trim().toLowerCase(), fp = $("#filtreP").value;
+const L = R.filter(r => (!fp || (fp==="oui")===r.presence) && (!f || [r.nom,r.telephone,r.message,JSON.stringify(r.details||{})].join(" ").toLowerCase().includes(f)));
+$("#tb").innerHTML = L.length ? L.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.nom)}</b></td><td class="${r.presence?"oui":"non"}">${r.presence?"Présent":"Absent"}</td><td>${r.presence?r.total:"–"}</td><td>${esc(r.telephone||"")}</td>
+<td class="det">${Object.entries(r.details||{}).map(([k,v])=>`<div><b>${esc(k)}</b> ${esc(v)}</div>`).join("")}</td><td>${esc(r.message||"")}</td>
+<td style="white-space:nowrap">${new Date(r.created_at).toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}</td>
+<td class="suppr"><button class="btn danger mini" data-id="${r.id}" type="button">Supprimer</button></td></tr>`).join("") : `<tr><td colspan="9" style="text-align:center;color:var(--doux)">Aucune réponse pour le moment.</td></tr>`;
+$("#tb").querySelectorAll("[data-id]").forEach(b => b.onclick = async () => {
+const r = R.find(x=>x.id==b.dataset.id);
+if (!confirm(`Supprimer la réponse de « ${r.nom} » ? Cette personne pourra répondre à nouveau.`)) return;
+try { await rpc("supprimer_reponse",{p_evenement:S.slug,p_code:S.code,p_id:r.id}); toast("Réponse supprimée"); charger(); } catch(e){ alert(msgErr(e)); }
+});
+};
+$("#filtre").oninput = afficher; $("#filtreP").onchange = afficher; $("#rafr").onclick = charger;
+$("#csv").onclick = () => {
+const R = S.reponses, cles = [...new Set(R.flatMap(r=>Object.keys(r.details||{})))];
+const lignes = [["Nom","Présence","Personnes","Téléphone",...cles,"Message","Reçu le"], ...R.map(r=>[r.nom, r.presence?"Présent":"Absent", r.presence?r.total:0, r.telephone||"", ...cles.map(k=>(r.details||{})[k]||""), r.message||"", new Date(r.created_at).toLocaleString("fr-FR")])];
+const csv = "﻿" + lignes.map(l=>l.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(";")).join("\r\n");
+const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"})); a.download = `reponses-${S.slug}.csv`; a.click();
+};
+charger();
+}
+function oReglages(){
+const lien = lienOfficiel(), adm = location.origin + "/admin?e=" + S.slug, A = S.acces || {};
+const imgAp = get(S.cfg,"partage.image")||get(S.cfg,"couverture.photo")||get(S.cfg,"presentation.photo");
+const p = rendrePanneau(`<fieldset><legend>Lien officiel à envoyer aux invités</legend>
+${A.protege?`<p class="aide" style="margin:6px 0 4px">Seul ce lien (avec sa clé) ouvre l'invitation complète : programme, confirmation de présence et boutons WhatsApp. Sans la clé, la personne ne voit que la page d'accueil et un bouton pour demander l'invitation au numéro autorisé.</p>`:`<p class="aide" style="margin:6px 0 4px">Protection désactivée : tout le monde peut ouvrir l'invitation complète.</p>`}
+<div class="lien-box"><b style="flex:1">${esc(lien)}</b><button class="btn mini" type="button" data-copie="${esc(lien)}">Copier</button>
+<a class="btn mini" style="background:#25D366;border-color:#25D366" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent((get(S.cfg,"partage.message")||"")+" "+lien)}">WhatsApp</a></div>
+<p class="aide">Lien de l'administration : ${esc(adm)}</p>
+</fieldset>
+<fieldset><legend>Numéro autorisé à partager l'invitation</legend>
+<p style="margin:8px 0">Numéro actuel : <b>${esc(A.numero||"")}</b></p>
+<label class="l" for="nvNum">Nouveau numéro autorisé</label>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="nvNum" value="${esc(A.numero||"")}" inputmode="tel" style="flex:1;min-width:200px" placeholder="+243 …"><button class="btn" id="majNum" type="button">Changer le numéro</button></div>
+<p class="aide">Changer le numéro crée un nouveau lien officiel : les liens envoyés avant ne donnent plus accès à l'invitation complète (ils montrent la page d'accueil seulement). Le bouton « Demander mon invitation » renvoie vers ce numéro.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+<button class="btn clair" id="nvCle" type="button">Générer un nouveau lien (même numéro)</button>
+<button class="btn clair" id="basProt" type="button">${A.protege?"Désactiver la protection":"Activer la protection"}</button></div>
+<p class="msg" id="msgNum"></p>
+</fieldset>
+<fieldset><legend>Adresse du lien</legend>
+<label class="l" for="nvAdr">Fin du lien (après « ${esc(location.host)}/ »)</label>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="nvAdr" value="${esc(S.slug)}" autocapitalize="off" style="flex:1;min-width:200px"><button class="btn" id="majAdr" type="button">Changer l'adresse</button></div>
+<p class="aide">Lettres sans accents, chiffres et tirets. Ex. : noces-de-coton-elie-achou. L'ancien lien continue de fonctionner : il renvoie automatiquement vers le nouveau.</p>
+<p class="msg" id="msgAdr"></p>
+</fieldset>
+<fieldset><legend>Aperçu du lien partagé</legend>
+${champ("partage.titre","Titre affiché dans l'aperçu","text","Vide = « "+esc(get(S.cfg,"meta.titreOnglet")||"")+" »")}
+${champ("partage.description","Petite description","text","Vide = la phrase de couverture.")}
+<div style="margin-top:14px;max-width:420px;border-radius:10px;overflow:hidden;border:1px solid #cfe9bf;font-size:13px">
+<div style="height:200px;background:#ddd center/cover;${imgAp?`background-image:url('${esc(imgAp)}')`:""}">${imgAp?"":'<div style="height:100%;display:grid;place-items:center;color:#666;padding:20px;text-align:center">Ajoutez la photo du couple dans l\'onglet Photos</div>'}</div>
+<div style="padding:8px 10px;background:#f4fbef"><b id="apT">${esc(get(S.cfg,"partage.titre")||get(S.cfg,"meta.titreOnglet")||"")}</b><div id="apD" style="color:#555">${esc(get(S.cfg,"partage.description")||get(S.cfg,"couverture.citation")||"")}</div><div style="color:#888;font-size:11px">${esc(location.host)}</div></div>
+</div>
+<p class="aide">La photo se règle dans l'onglet Photos. WhatsApp garde l'aperçu en mémoire : après une modification, un lien déjà envoyé peut garder l'ancien aperçu un moment.</p>
+</fieldset>
+<fieldset><legend>Confirmations</legend>
+<p style="margin:8px 0">Statut actuel : <b class="${S.ev.ouvert?"oui":"non"}">${S.ev.ouvert?"ouvertes":"closes"}</b></p>
+<button class="btn clair" id="basc" type="button">${S.ev.ouvert?"Clore les confirmations":"Rouvrir les confirmations"}</button>
+<p class="aide">Quand elles sont closes, le formulaire est remplacé par un message.</p>
+</fieldset>
+<fieldset><legend>Nom interne de l'invitation</legend>
+<input type="text" id="titreEv" value="${esc(S.ev.titre)}"><button class="btn clair" id="majTitre" style="margin-top:8px" type="button">Renommer</button>
+</fieldset>
+${S.maitre?`<fieldset><legend>Code d'accès du client ★</legend><label class="l">Nouveau code (6 caractères minimum)</label><input type="text" id="nvCode" value="${genCode(S.slug)}"><button class="btn clair" id="majCode" style="margin-top:8px" type="button">Changer le code client</button></fieldset>`:""}`);
+p.querySelectorAll("[data-copie]").forEach(b => b.onclick = () => copier(b.dataset.copie));
+$("#f_partage_titre").addEventListener("input", e => $("#apT").textContent = e.target.value || get(S.cfg,"meta.titreOnglet") || "");
+$("#f_partage_description").addEventListener("input", e => $("#apD").textContent = e.target.value || get(S.cfg,"couverture.citation") || "");
+$("#nvAdr").addEventListener("input", e => { e.target.value = e.target.value.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9-]+/g,"-"); });
+$("#majAdr").onclick = async () => {
+const n = $("#nvAdr").value.replace(/^-+|-+$/g,""), m = $("#msgAdr");
+if (n === S.slug) return;
+if (S.sale && !confirm("Des modifications ne sont pas enregistrées. Elles seront enregistrées avant le changement d'adresse. Continuer ?")) return;
+if (!confirm(`Nouvelle adresse :\n${location.origin}/${n}\n\nL'ancien lien renverra vers celui-ci. Confirmer ?`)) return;
+try {
+if (S.sale) { await rpc("sauver_config",{p_slug:S.slug,p_code:S.code,p_config:S.cfg}); S.sale=false; }
+const r = await rpc("changer_adresse",{p_slug:S.slug,p_code:S.code,p_nouveau:n});
+S.slug = r.slug; try{ sessionStorage.setItem("adm", JSON.stringify({slug:S.slug,code:S.code})); }catch{}
+history.replaceState(null,"","?e="+S.slug);
+$("#hSlug").textContent = "/" + S.slug + (S.maitre ? " · accès maître" : ""); $("#voir").href = lienOfficiel(); $("#ifr").src = srcApercu();
+majEtat(); toast("Adresse changée ✓"); oReglages();
+} catch(e){ m.className="msg ko"; m.textContent = msgErr(e); }
+};
+const reglerAcces = async (args, msgOk, question) => {
+if (question && !confirm(question)) return;
+const m=$("#msgNum");
+try { S.acces = await rpc("reglage_acces",{p_slug:S.slug,p_code:S.code,...args}); $("#voir").href = lienOfficiel(); $("#ifr").src = srcApercu(); toast(msgOk); oReglages(); }
+catch(e){ m.className="msg ko"; m.textContent = msgErr(e); }
+};
+$("#majNum").onclick = () => { const n=$("#nvNum").value.trim(); if (n===A.numero) return; reglerAcces({p_numero:n}, "Numéro autorisé changé ✓", `Nouveau numéro autorisé : ${n}\n\nUn nouveau lien officiel sera créé et les anciens liens ne donneront plus accès à l'invitation complète. Confirmer ?`); };
+$("#nvCle").onclick = () => reglerAcces({p_nouvelle_cle:true}, "Nouveau lien créé ✓", "Créer un nouveau lien officiel ? Les liens déjà envoyés ne donneront plus accès à l'invitation complète.");
+$("#basProt").onclick = () => reglerAcces({p_protege:!A.protege}, A.protege?"Protection désactivée":"Protection activée ✓", A.protege?"Désactiver la protection ? Tout le monde pourra ouvrir l'invitation complète et confirmer.":null);
+$("#basc").onclick = async () => { try{ await rpc("sauver_config",{p_slug:S.slug,p_code:S.code,p_config:S.cfg,p_ouvert:!S.ev.ouvert}); S.ev.ouvert=!S.ev.ouvert; S.sale=false; majEtat(); toast("Statut mis à jour"); oReglages(); }catch(e){ alert(msgErr(e)); } };
+$("#majTitre").onclick = async () => { const t=$("#titreEv").value.trim(); if(!t) return; try{ await rpc("sauver_config",{p_slug:S.slug,p_code:S.code,p_config:S.cfg,p_titre:t}); S.ev.titre=t; $("#hTitre").textContent=t; S.sale=false; majEtat(); toast("Renommée"); }catch(e){ alert(msgErr(e)); } };
+if (S.maitre) $("#majCode").onclick = async () => { const c=$("#nvCode").value.trim(); if(!confirm(`Remplacer le code client par « ${c} » ?`)) return; try{ await rpc("changer_code_client",{p_maitre:S.code,p_slug:S.slug,p_nouveau:c}); alert("Nouveau code client : "+c.toUpperCase()); }catch(e){ alert(msgErr(e)); } };
+}
+async function copier(t){ try{ await navigator.clipboard.writeText(t); toast("Copié !"); }catch{ prompt("Copiez :", t); } }
+function genCode(slug){ const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; const r=crypto.getRandomValues(new Uint8Array(6)); return (slug.replace(/[^a-z]/g,"").slice(0,2).toUpperCase()||"EV")+"-"+[...r].map(x=>A[x%A.length]).join(""); }
+async function oInvitations(){
+const p = rendrePanneau(`<fieldset><legend>Créer une nouvelle invitation</legend>
+<div class="deux">
+<div><label class="l" for="nSlug">Adresse (fin du lien)</label><input type="text" id="nSlug" placeholder="ex. mariage-paul-grace" autocapitalize="off"></div>
+<div><label class="l" for="nTitre">Nom interne</label><input type="text" id="nTitre" placeholder="ex. Mariage Paul & Grâce"></div>
+<div><label class="l" for="nCode">Code d'accès du client</label><input type="text" id="nCode"></div>
+<div><label class="l" for="nBase">Contenu de départ</label><select id="nBase"><option value="modele">Modèle vierge (mariage)</option><option value="copie">Copie de l'invitation actuelle</option></select></div>
+</div>
+<p class="msg" id="nMsg"></p>
+<button class="btn or" id="creer" type="button" style="margin-top:10px">Créer l'invitation</button>
+</fieldset>
+<fieldset><legend>Toutes les invitations</legend><div class="table-wrap"><table><thead><tr><th>Invitation</th><th>Adresse</th><th>Réponses</th><th>Personnes</th><th>Statut</th><th></th></tr></thead><tbody id="tbEv"><tr><td colspan="6">Chargement…</td></tr></tbody></table></div></fieldset>`);
+const majCode = () => $("#nCode").value = genCode($("#nSlug").value);
+$("#nSlug").addEventListener("input", e => { e.target.value = e.target.value.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9-]+/g,"-"); majCode(); });
+majCode();
+const lister = async () => {
+try { const L = await rpc("liste_evenements",{p_maitre:S.code}) || [];
+$("#tbEv").innerHTML = L.map(e=>`<tr><td><b>${esc(e.titre)}</b></td><td><a href="/${esc(e.slug)}" target="_blank">/${esc(e.slug)}</a></td><td>${e.reponses}</td><td>${e.personnes}</td><td class="${e.ouvert?"oui":"non"}">${e.ouvert?"Ouverte":"Close"}</td><td><a class="btn clair mini" href="?e=${esc(e.slug)}" data-ouvre="${esc(e.slug)}">Gérer</a></td></tr>`).join("");
+$("#tbEv").querySelectorAll("[data-ouvre]").forEach(a => a.onclick = ev => { ev.preventDefault(); if(S.sale && !confirm("Des modifications ne sont pas enregistrées. Continuer ?")) return; S.sale=false; connecter(a.dataset.ouvre, S.code); });
+} catch(e){ $("#tbEv").innerHTML = `<tr><td colspan="6" class="non">${esc(msgErr(e))}</td></tr>`; }
+};
+$("#creer").onclick = async () => {
+const slug=$("#nSlug").value.replace(/^-+|-+$/g,""), titre=$("#nTitre").value.trim()||slug, code=$("#nCode").value.trim();
+const m=$("#nMsg");
+try {
+const cfg = $("#nBase").value==="copie" ? clone(S.cfg) : await (await fetch("/modele.json",{cache:"no-store"})).json();
+if ($("#nBase").value==="copie") { cfg.galerie = {...(cfg.galerie||{}), photos:[]}; ["couverture","presentation","merci"].forEach(k=>{ if(cfg[k]) cfg[k].photo=""; }); if (cfg.partage) { cfg.partage.image=""; delete cfg.partage.auto; } }
+await rpc("creer_evenement",{p_maitre:S.code,p_slug:slug,p_titre:titre,p_code_client:code,p_config:cfg});
+m.className="msg ok"; m.innerHTML = `Invitation créée ✓<br>Adresse : <b>${esc(location.origin+"/"+slug)}</b><br>Code client : <b>${esc(code.toUpperCase())}</b> — notez-le, il ne pourra plus être affiché.<br>Le lien officiel (avec sa clé) et le numéro autorisé se règlent dans « Partage & réglages » de cette invitation (bouton Gérer).`;
+lister();
+} catch(e){ m.className="msg ko"; m.textContent = msgErr(e); }
+};
+lister();
+}
+</script>
+</body>
+</html>

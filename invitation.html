@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!--OG--><title>Invitation</title>
+<meta name="description" content="Invitation digitale — EL TSHI DIGIT">
+<meta property="og:title" content="Vous êtes invités">
+<meta property="og:description" content="Invitation digitale — découvrez notre invitation et confirmez votre présence."><!--/OG-->
+<meta name="theme-color" content="#1A1A1A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Pinyon+Script&family=Montserrat:wght@400;500;600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--ivoire:#F8F4EC;--ivoire2:#F1EADD;--noir:#1A1A1A;--champ:#E8D9BF;--or:#B8975A;--or2:#D4B67A;--texte:#3A342C;--doux:#7A7062;--serif:"Cormorant Garamond",Georgia,serif;--script:"Pinyon Script",cursive;--sans:Montserrat,system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--ivoire);color:var(--texte);font-family:var(--serif);font-size:1.16rem;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.ferme{overflow:hidden;height:100vh}
+img{max-width:100%;display:block}
+a{color:inherit}
+.or{color:var(--or)}
+.petit{font-family:var(--sans);font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;font-weight:500}
+#charge{position:fixed;inset:0;background:var(--noir);display:grid;place-items:center;z-index:200;transition:opacity .6s}
+#charge.fin{opacity:0;pointer-events:none}
+#charge .mono{font-family:var(--script);color:var(--or2);font-size:3.4rem;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.4}}
+#introuvable{min-height:100vh;display:grid;place-items:center;text-align:center;padding:30px}
+#couv{position:fixed;inset:0;z-index:100;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;transition:transform 1.2s cubic-bezier(.7,0,.2,1),opacity 1.2s}
+#couv.ouvert{transform:translateY(-100%);opacity:.6}
+#couv.parti{display:none}
+#couv .fond{position:absolute;inset:-4%;background-size:cover;background-position:center;filter:grayscale(1) contrast(1.05) brightness(.62);animation:zoom 22s ease-in-out infinite alternate}
+#couv .fond.vide{filter:none;background:radial-gradient(ellipse at 50% 35%,#3a352d 0%,#16140f 70%)}
+@keyframes zoom{to{transform:scale(1.08)}}
+#couv .voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.15) 40%,rgba(0,0,0,.6))}
+#couv .cadre{position:absolute;inset:16px;border:1px solid rgba(212,182,122,.55);pointer-events:none}
+#couv .cadre::after{content:"";position:absolute;inset:6px;border:1px solid rgba(212,182,122,.25)}
+#couv .contenu{position:relative;padding:40px 26px;max-width:620px}
+#couv .surtitre{color:var(--champ);opacity:0;animation:monte 1.2s .3s forwards}
+#couv .noms{font-family:var(--script);font-weight:400;font-size:clamp(3.6rem,15vw,6.6rem);line-height:1.05;margin:22px 0 8px;color:#fff;opacity:0;animation:monte 1.4s .7s forwards;text-shadow:0 2px 30px rgba(0,0,0,.35)}
+#couv .noms .et{color:var(--or2);font-size:.7em;padding:0 .12em}
+#couv .date{font-family:var(--sans);letter-spacing:.42em;font-size:.82rem;color:var(--champ);opacity:0;animation:monte 1.2s 1.2s forwards}
+#couv .citation{font-style:italic;font-size:1.22rem;margin:22px auto 34px;max-width:420px;color:#efe8db;opacity:0;animation:monte 1.2s 1.6s forwards}
+#couv .trait{width:70px;height:1px;background:var(--or2);margin:18px auto 0;opacity:0;animation:monte 1.2s 1s forwards}
+@keyframes monte{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.btn-or{font-family:var(--sans);font-size:.72rem;letter-spacing:.28em;font-weight:500;text-transform:uppercase;color:#fff;background:transparent;border:1px solid var(--or2);padding:17px 30px;cursor:pointer;position:relative;overflow:hidden;transition:color .4s;text-decoration:none;display:inline-block}
+.btn-or::before{content:"";position:absolute;inset:0;background:var(--or);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.7,0,.2,1);z-index:-1}
+.btn-or:hover::before,.btn-or:focus-visible::before{transform:scaleX(1)}
+.btn-or{z-index:0}
+#couv .btn-or{opacity:0;animation:monte 1.2s 2s forwards,brille 3s 3.2s ease-in-out infinite}
+@keyframes brille{50%{box-shadow:0 0 0 6px rgba(212,182,122,.12),0 0 28px rgba(212,182,122,.35)}}
+#couv .verrou{opacity:0;animation:monte 1.2s 2s forwards;max-width:420px;margin:0 auto}
+#couv .verrou p{font-family:var(--sans);font-size:.78rem;letter-spacing:.06em;line-height:1.7;color:#d9cfbf;margin-bottom:20px}
+#couv .verrou .btn-or{opacity:1;animation:none;display:inline-flex;gap:10px;align-items:center}
+#couv .verrou svg{width:18px;height:18px}
+#couv .marque{position:absolute;bottom:26px;left:0;right:0;font-family:var(--sans);font-size:.62rem;letter-spacing:.2em;color:rgba(255,255,255,.55)}
+.paillette{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--or2);opacity:0;animation:scintille 4s infinite}
+@keyframes scintille{20%{opacity:.9}60%{opacity:0;transform:translateY(-40px)}}
+section{padding:88px 22px;position:relative}
+.cont{max-width:980px;margin:0 auto}
+.entete{text-align:center;margin-bottom:46px}
+.entete .petit{color:var(--or)}
+.entete h2{font-weight:500;font-size:clamp(2.1rem,7vw,3.1rem);line-height:1.15;color:var(--noir);margin-top:10px}
+.entete h2 em{font-family:var(--script);font-style:normal;color:var(--or);font-weight:400}
+.entete .sous{font-style:italic;color:var(--doux);margin-top:8px}
+.orn{display:block;margin:16px auto 0;width:150px;height:34px;color:var(--or)}
+.revele{opacity:0;transform:translateY(26px);transition:opacity 1s ease,transform 1s ease}
+.revele.vu{opacity:1;transform:none}
+.fond-champ{background:var(--ivoire2)}
+.fond-noir{background:var(--noir);color:#efe8db}
+.fond-noir .entete h2{color:#fff}
+#presentation .grille{display:grid;gap:44px;align-items:center}
+.arche{position:relative;max-width:360px;margin:0 auto;width:100%}
+.arche .img{aspect-ratio:3/4;border-radius:999px 999px 6px 6px;overflow:hidden;background:linear-gradient(160deg,var(--champ),#cdb995);position:relative;box-shadow:0 30px 60px -30px rgba(60,40,10,.45)}
+.arche .img img{width:100%;height:100%;object-fit:cover}
+.arche::before{content:"";position:absolute;inset:-12px;border:1px solid var(--or);border-radius:999px 999px 10px 10px;opacity:.6}
+.arche .brin1{position:absolute;width:150px;left:-46px;bottom:-14px;transform:rotate(-24deg);color:var(--or)}
+.arche .brin2{position:absolute;width:120px;right:-40px;top:18%;transform:rotate(200deg);color:#a88a55}
+.monogramme{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--script);font-size:4.4rem;color:rgba(255,255,255,.9)}
+.infos-cle{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;margin:26px 0;font-family:var(--sans);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--noir)}
+.infos-cle span{display:flex;align-items:center;gap:8px}
+.infos-cle svg{width:18px;height:18px;color:var(--or)}
+.texte-pres{text-align:center;font-size:1.24rem;max-width:560px;margin:0 auto}
+.texte-pres::first-letter{font-family:var(--script);font-size:3.2em;float:left;line-height:.8;padding:6px 8px 0 0;color:var(--or)}
+.signature-noms{font-family:var(--script);font-size:2.2rem;color:var(--or);text-align:center;margin-top:20px}
+#compte{text-align:center;overflow:hidden}
+#compte .grille-cpt{display:flex;justify-content:center;gap:clamp(10px,4vw,34px);margin-top:10px}
+.case{min-width:70px}
+.case b{display:block;font-weight:400;font-size:clamp(2.6rem,11vw,4.4rem);line-height:1;color:#fff;font-variant-numeric:tabular-nums}
+.case small{display:block;margin-top:10px;color:var(--or2);letter-spacing:.16em!important;font-size:.62rem!important}
+.case+.case{border-left:1px solid rgba(212,182,122,.3);padding-left:clamp(10px,4vw,34px)}
+#compte .fini{font-style:italic;font-size:1.5rem;color:var(--champ)}
+#compte .date-longue{margin-top:30px;font-style:italic;color:var(--champ)}
+#compte .anneaux{position:absolute;right:-60px;top:-40px;width:260px;opacity:.07;color:var(--or2)}
+.ligne-temps{position:relative;max-width:820px;margin:0 auto;padding:10px 0}
+.ligne-temps::before{content:"";position:absolute;left:27px;top:0;bottom:0;width:1px;background:linear-gradient(var(--or),var(--or) 90%,transparent)}
+.etape{position:relative;padding:0 0 38px 78px}
+.etape .pastille{position:absolute;left:0;top:0;width:55px;height:55px;border-radius:50%;background:var(--ivoire);border:1px solid var(--or);display:grid;place-items:center;color:var(--or);box-shadow:0 0 0 6px var(--ivoire)}
+.etape .pastille svg{width:24px;height:24px}
+.etape .heure{font-family:var(--sans);font-size:.74rem;letter-spacing:.24em;color:var(--or);font-weight:600}
+.etape h3{font-weight:500;font-size:1.55rem;color:var(--noir);line-height:1.2}
+.etape p{color:var(--doux);font-style:italic}
+@media(min-width:760px){
+.ligne-temps::before{left:50%}
+.etape{width:50%;padding:0 62px 46px 0;text-align:right}
+.etape .pastille{left:auto;right:-28px}
+.etape:nth-child(even){margin-left:50%;padding:0 0 46px 62px;text-align:left}
+.etape:nth-child(even) .pastille{right:auto;left:-27px}
+}
+.note-horaire{text-align:center;font-style:italic;color:var(--doux);margin-top:6px}
+.cartes{display:grid;gap:18px}
+.carte{background:#fff;border:1px solid var(--champ);padding:32px 26px;text-align:center;position:relative}
+.carte::before{content:"";position:absolute;inset:7px;border:1px solid rgba(184,151,90,.18);pointer-events:none}
+.carte svg.ic,.carte-lieu svg.ic{width:34px;height:34px;color:var(--or);margin:0 auto 14px}
+.carte h3{font-family:var(--sans);font-size:.78rem;letter-spacing:.28em;font-weight:600;text-transform:uppercase;color:var(--noir);margin-bottom:10px}
+.carte p{white-space:pre-line}
+.carte .vide{font-style:italic;color:var(--doux)}
+.carte-lieu{margin-top:18px;background:#fff;border:1px solid var(--champ);overflow:hidden}
+.carte-lieu .haut{padding:30px 24px;text-align:center}
+.carte-lieu h3{font-weight:500;font-size:1.8rem;color:var(--noir)}
+.carte-lieu .adr{color:var(--doux);font-style:italic;margin-bottom:20px}
+.carte-lieu iframe{display:block;width:100%;height:320px;border:0;filter:grayscale(.85) sepia(.15)}
+.btn-noir{font-family:var(--sans);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;background:var(--noir);color:#fff;border:0;padding:16px 26px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:background .3s}
+.btn-noir:hover{background:var(--or)}
+.btn-noir svg{width:16px;height:16px}
+@media(min-width:760px){.cartes{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}#presentation .grille{grid-template-columns:1fr 1.1fr}}
+.galerie{columns:2;column-gap:12px}
+@media(min-width:760px){.galerie{columns:3;column-gap:16px}}
+.tuile{break-inside:avoid;margin-bottom:12px;position:relative;overflow:hidden;cursor:zoom-in;background:var(--champ)}
+.tuile img{width:100%;transition:transform 1.2s ease,filter .6s}
+.tuile:hover img{transform:scale(1.05)}
+.tuile figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;font-style:italic;font-size:1rem;opacity:0;transition:opacity .5s}
+.tuile:hover figcaption{opacity:1}
+.tuile.vide{cursor:default;display:grid;place-items:center;color:rgba(255,255,255,.85);font-family:var(--script);font-size:2.6rem}
+.tuile.vide:nth-child(3n+1){aspect-ratio:3/4;background:linear-gradient(160deg,#e8d9bf,#c9b28a)}
+.tuile.vide:nth-child(3n+2){aspect-ratio:1;background:linear-gradient(160deg,#d8c7a6,#a98d5c)}
+.tuile.vide:nth-child(3n){aspect-ratio:4/5;background:linear-gradient(160deg,#3b362e,#1a1a1a)}
+#visionneuse{position:fixed;inset:0;background:rgba(15,13,10,.95);z-index:150;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px}
+#visionneuse img{max-height:80vh;max-width:100%;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#visionneuse p{color:var(--champ);font-style:italic;margin-top:14px;text-align:center}
+#visionneuse button{position:absolute;background:none;border:1px solid rgba(212,182,122,.5);color:#fff;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:1.2rem}
+#visionneuse .fermer{top:18px;right:18px}
+#visionneuse .prec{left:14px;top:50%}
+#visionneuse .suiv{right:14px;top:50%}
+#rsvp .boite{max-width:640px;margin:0 auto;background:#fff;padding:42px 26px;border:1px solid var(--champ);position:relative}
+#rsvp .boite::before{content:"";position:absolute;inset:8px;border:1px solid rgba(184,151,90,.2);pointer-events:none}
+.champ{margin-bottom:24px;position:relative}
+.champ>label,.champ>.lab{display:block;font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--noir);font-weight:500;margin-bottom:10px;line-height:1.5}
+.champ .req{color:var(--or)}
+.champ input[type=text],.champ input[type=tel],.champ input[type=number],.champ textarea{width:100%;border:0;border-bottom:1px solid #cfc3ad;background:transparent;font-family:var(--serif);font-size:1.2rem;padding:8px 2px;color:var(--noir);outline:none;transition:border-color .3s;border-radius:0}
+.champ textarea{min-height:110px;resize:vertical;border:1px solid #cfc3ad;padding:12px}
+.champ input:focus,.champ textarea:focus{border-color:var(--or)}
+.choix{display:flex;flex-wrap:wrap;gap:10px}
+.choix label{flex:1 1 120px;position:relative;cursor:pointer}
+.choix input{position:absolute;opacity:0;pointer-events:none}
+.choix span{display:block;text-align:center;border:1px solid #cfc3ad;padding:13px 12px;font-family:var(--sans);font-size:.8rem;letter-spacing:.06em;transition:all .3s}
+.choix input:checked+span{background:var(--noir);border-color:var(--noir);color:#fff}
+.choix input:focus-visible+span{outline:2px solid var(--or);outline-offset:2px}
+.compteur{display:flex;align-items:center;gap:0;border:1px solid #cfc3ad;width:max-content}
+.compteur button{width:48px;height:48px;border:0;background:transparent;font-size:1.4rem;cursor:pointer;color:var(--noir)}
+.compteur input{width:64px!important;text-align:center;border:0!important;font-size:1.3rem!important}
+.erreur{color:#9b3b2a;font-family:var(--sans);font-size:.8rem;margin-top:8px}
+#envoyer{width:100%;margin-top:6px;justify-content:center;padding:19px}
+#envoyer[disabled]{opacity:.6;cursor:wait}
+.limite{text-align:center;font-family:var(--sans);font-size:.72rem;letter-spacing:.2em;color:var(--or);margin-top:-26px;margin-bottom:34px;text-transform:uppercase}
+.merci-vue{text-align:center}
+.merci-vue .photo-merci{width:170px;height:170px;border-radius:50%;margin:0 auto 26px;overflow:hidden;border:1px solid var(--or);padding:6px;background:#fff}
+.merci-vue .photo-merci>div{width:100%;height:100%;border-radius:50%;background:linear-gradient(160deg,var(--champ),#b89d6c);background-size:cover;background-position:center;display:grid;place-items:center;font-family:var(--script);color:#fff;font-size:2.6rem;filter:grayscale(.2)}
+.merci-vue h3{font-weight:500;font-size:1.7rem;line-height:1.3;color:var(--noir)}
+.merci-vue p{margin-top:14px;font-style:italic;color:var(--doux)}
+.merci-vue .sig{font-family:var(--script);color:var(--or);font-size:2.4rem;margin-top:8px;font-style:normal}
+#finale{text-align:center;padding:110px 22px 90px;overflow:hidden}
+#finale .please{letter-spacing:.6em;color:var(--or2)}
+#finale .gros{font-weight:400;font-size:clamp(4.4rem,22vw,8.6rem);letter-spacing:.12em;line-height:1;margin:14px 0 8px;color:#fff;padding-left:.12em}
+#finale .lim{font-family:var(--sans);letter-spacing:.34em;font-size:.76rem;color:var(--champ);margin-bottom:38px}
+#finale .merci-script{font-family:var(--script);font-size:clamp(3.4rem,13vw,5.4rem);color:var(--or2);margin-top:54px;line-height:1.1}
+#finale .noms-fin{font-family:var(--sans);letter-spacing:.38em;font-size:.78rem;color:#efe8db;margin-top:6px}
+#finale .brin-g{position:absolute;width:280px;left:-70px;top:30px;transform:rotate(18deg);color:var(--or);opacity:.35}
+#finale .brin-d{position:absolute;width:280px;right:-70px;bottom:40px;transform:rotate(198deg);color:var(--or);opacity:.35}
+footer{background:#111;color:#bdb3a2;text-align:center;padding:46px 22px 110px}
+.partage{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:34px}
+.partage button,.partage a{font-family:var(--sans);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;background:transparent;border:1px solid rgba(212,182,122,.5);color:#efe8db;padding:13px 18px;cursor:pointer;text-decoration:none;display:inline-flex;gap:8px;align-items:center}
+.partage svg{width:16px;height:16px}
+.signature{display:inline-flex;flex-direction:column;align-items:center;gap:6px;background:#fff;padding:16px 24px;border-radius:18px;text-decoration:none;color:#6E6886;font-family:var(--sans);font-size:.72rem}
+.signature .tel{font-family:"Space Grotesk",var(--sans);font-weight:700;color:#4B2E83;font-size:.98rem}
+#flottant{position:fixed;right:16px;bottom:16px;z-index:60;width:54px;height:54px;border-radius:50%;background:#25D366;color:#fff;display:grid;place-items:center;box-shadow:0 10px 26px rgba(0,0,0,.25);text-decoration:none;transform:scale(0);transition:transform .4s}
+#flottant.vu{transform:scale(1)}
+#flottant svg{width:28px;height:28px}
+#toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);background:var(--noir);color:#fff;font-family:var(--sans);font-size:.8rem;padding:12px 20px;opacity:0;transition:all .4s;z-index:170;pointer-events:none}
+#toast.vu{opacity:1;transform:translateX(-50%)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important}#couv *{opacity:1!important}.revele{opacity:1;transform:none}}
+</style>
+</head>
+<body class="ferme">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="brin" viewBox="0 0 160 60" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
+<path d="M4 50 C40 44 80 32 156 10"/>
+<path d="M30 45 q2-14 16-20 q-2 14-16 20z" fill="currentColor" fill-opacity=".18"/>
+<path d="M34 44 q10 8 24 4 q-10-10-24-4z" fill="currentColor" fill-opacity=".18"/>
+<path d="M62 37 q3-15 18-19 q-3 14-18 19z" fill="currentColor" fill-opacity=".18"/>
+<path d="M66 36 q11 7 25 1 q-11-9-25-1z" fill="currentColor" fill-opacity=".18"/>
+<path d="M94 27 q4-14 18-17 q-4 13-18 17z" fill="currentColor" fill-opacity=".18"/>
+<path d="M98 26 q10 5 23-1 q-10-8-23 1z" fill="currentColor" fill-opacity=".18"/>
+<path d="M124 18 q5-11 17-12 q-5 10-17 12z" fill="currentColor" fill-opacity=".18"/>
+<circle cx="150" cy="6" r="2" fill="currentColor"/><circle cx="143" cy="17" r="1.6" fill="currentColor"/>
+</symbol>
+<symbol id="ornement" viewBox="0 0 150 34" fill="none" stroke="currentColor" stroke-width="1">
+<path d="M2 17h48M100 17h48"/>
+<circle cx="66" cy="17" r="9"/><circle cx="84" cy="17" r="9"/>
+<path d="M75 4l3 3-3 3-3-3z" fill="currentColor"/>
+<circle cx="52" cy="17" r="1.6" fill="currentColor"/><circle cx="98" cy="17" r="1.6" fill="currentColor"/>
+</symbol>
+</defs>
+</svg>
+<div id="charge"><div class="mono">&amp;</div></div>
+<div id="introuvable" hidden><div><p class="petit or">EL TSHI DIGIT</p><h1 style="font-weight:500;font-size:2.2rem;margin:12px 0">Invitation introuvable</h1><p>Vérifiez le lien reçu ou contactez l'organisateur.</p><p style="margin-top:20px"><a href="https://wa.me/243844195449">+243 844 195 449</a></p></div></div>
+<div id="couv" hidden>
+<div class="fond vide" id="couvFond"></div>
+<div class="voile"></div>
+<div class="cadre"></div>
+<div class="contenu">
+<p class="petit surtitre" id="cSurtitre"></p>
+<h1 class="noms" id="cNoms"></h1>
+<div class="trait"></div>
+<p class="date" id="cDate" style="margin-top:18px"></p>
+<p class="citation" id="cCitation"></p>
+<button class="btn-or" id="ouvrir" type="button"></button>
+<div class="verrou" id="verrou" hidden></div>
+</div>
+<p class="marque">INVITATION DIGITALE · EL TSHI DIGIT · +243 844 195 449</p>
+</div>
+<main id="app" hidden></main>
+<div id="visionneuse" hidden role="dialog" aria-modal="true" aria-label="Photo">
+<button class="fermer" aria-label="Fermer">✕</button>
+<button class="prec" aria-label="Photo précédente">‹</button>
+<img alt="">
+<p></p>
+<button class="suiv" aria-label="Photo suivante">›</button>
+</div>
+<a id="flottant" target="_blank" rel="noopener" aria-label="Partager sur WhatsApp"></a>
+<div id="toast" role="status"></div>
+<script>
+const SB = { url: "https://vtizxpfxsozbotvkjsrg.supabase.co", cle: "sb_publishable_kPpkOa8UqHiuaSqsF6GqGQ_36GJcKt8" };
+let SLUG = (() => {
+const q = new URLSearchParams(location.search).get("e");
+if (q) return q.toLowerCase();
+const p = location.pathname.split("/").filter(Boolean)[0] || "";
+return /^[a-z0-9-]{3,60}$/.test(p) ? p : "";
+})();
+const ICONES = {
+accueil:'<path d="M3 11l9-7 9 7v9H3z"/><path d="M9 20v-6h6v6"/>',
+alliances:'<circle cx="9" cy="14" r="5"/><circle cx="15" cy="14" r="5"/><path d="M12 3.5l2 2-2 2-2-2z"/>',
+photo:'<rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8 7l1.5-3h5L16 7"/>',
+cocktail:'<path d="M4 4h8l-4 6z"/><path d="M8 10v8M5.5 18h5"/><path d="M14 7h6l-3 5v6M15 18h4"/>',
+micro:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/>',
+diner:'<path d="M7 3v8M5 3v5a2 2 0 004 0V3M7 11v10"/><path d="M17 3c-2.5 2-2.5 7 0 9v9"/>',
+musique:'<path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>',
+lune:'<path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/>',
+coeur:'<path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/>',
+gateau:'<path d="M4 20h16v-8H4zM4 15c2 1.5 4 1.5 6 0s4-1.5 6 0 3 1 4 0M12 12V8M12 5.5v.5"/>',
+etoile:'<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>',
+eglise:'<path d="M12 2v4M10 4h4M6 21V11l6-5 6 5v10M3 21h18M10 21v-4a2 2 0 014 0v4"/>',
+voiture:'<path d="M3 16v-4l2-5h14l2 5v4zM3 16v2h3v-2M18 16v2h3v-2"/><circle cx="7.5" cy="13" r="1"/><circle cx="16.5" cy="13" r="1"/>',
+lit:'<path d="M3 19V6M3 14h18v5M21 14v-3a3 3 0 00-3-3h-7v6"/><circle cx="7" cy="10.5" r="1.8"/>',
+epingle:'<path d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+horloge:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+calendrier:'<rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+cintre:'<path d="M12 7a2 2 0 112-2M12 7v1L3 15h18l-9-7"/>'
+};
+const ico = (n, cls="") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONES[n]||ICONES.coeur}</svg>`;
+const WA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2a8.2 8.2 0 01-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 01-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 00-.7.3 3 3 0 00-.9 2.2 5.1 5.1 0 001.1 2.7 11.7 11.7 0 004.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 001.8-1.3 2.2 2.2 0 00.2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>';
+const LOGO = `<svg width="64" height="74" viewBox="0 0 96 110" aria-hidden="true"><rect x="30" y="4" width="10" height="46" fill="#4B2E83"/><rect x="30" y="4" width="36" height="10" fill="#4B2E83"/><rect x="30" y="22" width="29" height="10" fill="#4B2E83"/><rect x="30" y="40" width="36" height="10" fill="#4B2E83"/><rect x="45" y="22" width="16" height="10" fill="#FF7A59"/><circle cx="74" cy="45" r="5" fill="#FF7A59"/><text x="48" y="76" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="20" fill="#4B2E83">EL TSHI</text><rect x="20" y="85" width="56" height="20" rx="10" fill="#4B2E83"/><text x="48" y="99.5" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="12" fill="#fff" letter-spacing="1.5">DIGIT</text></svg>`;
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $ = s => document.querySelector(s);
+const g = (o, p, d="") => p.split(".").reduce((a, k) => (a && a[k] !== undefined && a[k] !== null) ? a[k] : undefined, o) ?? d;
+const urlSure = u => /^https:\/\//.test(u || "") ? u : "";
+let C = {}, EV = {}, minuteur = null, photosGal = [], idxVis = 0, VERROU = false;
+let CLE = (() => { const k = new URLSearchParams(location.search).get("k"); if (k) return k.trim(); try { return localStorage.getItem("cle-" + SLUG) || ""; } catch { return ""; } })();
+function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("vu"); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove("vu"),2600); }
+function dateJ(){ const j=g(C,"date.jour"); if(!j) return null; const h=g(C,"date.heure")||"00:00"; const d=new Date(`${j}T${h}:00${g(C,"date.fuseau")||"+02:00"}`); return isNaN(d)?null:d; }
+function fmtDate(iso, opts){ if(!iso) return ""; const d=new Date(iso+"T12:00:00"); return isNaN(d)?"":d.toLocaleDateString("fr-FR",opts); }
+const initiales = () => `${(g(C,"couple.prenom1")||"").charAt(0)}&${(g(C,"couple.prenom2")||"").charAt(0)}`;
+const nomsScript = () => `${esc(g(C,"couple.prenom1"))} <span class="et">&amp;</span> ${esc(g(C,"couple.prenom2"))}`;
+const lienPage = () => location.origin + "/" + SLUG;
+async function rpc(fn, args){
+const r = await fetch(`${SB.url}/rest/v1/rpc/${fn}`, {method:"POST", headers:{"Content-Type":"application/json", apikey:SB.cle, Authorization:"Bearer "+SB.cle}, body:JSON.stringify(args)});
+const t = await r.text(); let j = null; try { j = t ? JSON.parse(t) : null; } catch {}
+if (!r.ok) { const e = new Error((j && j.message) || "ERREUR"); throw e; }
+return j;
+}
+function rendreCouverture(){
+document.title = g(C,"meta.titreOnglet") || `${g(C,"couple.prenom1")} & ${g(C,"couple.prenom2")}`;
+$("#cSurtitre").textContent = g(C,"couverture.surtitre");
+$("#cNoms").innerHTML = nomsScript();
+$("#cDate").textContent = fmtDate(g(C,"date.jour"),{day:"numeric",month:"long",year:"numeric"}).toUpperCase();
+$("#cCitation").textContent = g(C,"couverture.citation") ? `« ${g(C,"couverture.citation")} »` : "";
+$("#ouvrir").textContent = g(C,"couverture.bouton") || "DÉCOUVRIR NOTRE INVITATION";
+const ph = urlSure(g(C,"couverture.photo"));
+const f = $("#couvFond"); f.classList.toggle("vide", !ph); f.style.backgroundImage = ph ? `url("${ph}")` : "";
+if (!document.querySelector(".paillette")) for (let i=0;i<18;i++){ const p=document.createElement("i"); p.className="paillette"; p.style.left=Math.random()*100+"%"; p.style.top=(30+Math.random()*65)+"%"; p.style.animationDelay=(Math.random()*4)+"s"; $("#couv").appendChild(p); }
+}
+function entete(petit, titre, sous){ return `<div class="entete revele"><p class="petit">${esc(petit)}</p><h2>${titre}</h2>${sous?`<p class="sous">${esc(sous)}</p>`:""}<svg class="orn"><use href="#ornement"/></svg></div>`; }
+function sPresentation(){
+const ph = urlSure(g(C,"presentation.photo"));
+const j = g(C,"date.jour"), h = g(C,"date.heure"), hf = g(C,"date.heureFin"), lieu = g(C,"lieu.nom");
+const infos = [
+j && `<span>${ico("calendrier")}${esc(fmtDate(j,{weekday:"long",day:"numeric",month:"long",year:"numeric"}))}</span>`,
+h && `<span>${ico("horloge")}${esc(h.replace(":","h"))}${hf?" – "+esc(hf.replace(":","h")):""}</span>`,
+lieu && `<span>${ico("epingle")}${esc(lieu)}</span>`
+].filter(Boolean).join("");
+const titre = `${esc(g(C,"presentation.titre"))}${g(C,"presentation.sousTitre")?`<br><em>${esc(g(C,"presentation.sousTitre"))}</em>`:""}`;
+return `<section id="presentation"><div class="cont">
+${entete("Vous êtes invités", titre)}
+<div class="grille">
+<div class="arche revele"><div class="img">${ph?`<img src="${esc(ph)}" alt="${esc(g(C,"couple.nomsComplets"))}" loading="lazy">`:`<div class="monogramme">${esc(initiales())}</div>`}</div>
+<svg class="brin1" viewBox="0 0 160 60"><use href="#brin"/></svg><svg class="brin2" viewBox="0 0 160 60"><use href="#brin"/></svg></div>
+<div class="revele">
+<div class="infos-cle">${infos}</div>
+<p class="texte-pres">${esc(g(C,"presentation.message"))}</p>
+<p class="signature-noms">${esc(g(C,"couple.prenom1"))} &amp; ${esc(g(C,"couple.prenom2"))}</p>
+${g(C,"couple.nomsComplets")?`<p class="petit" style="text-align:center;color:var(--doux);margin-top:4px">${esc(g(C,"couple.nomsComplets"))}</p>`:""}
+</div>
+</div></div></section>`;
+}
+function sCompte(){
+if (!dateJ()) return "";
+return `<section id="compte" class="fond-noir"><svg class="anneaux" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=".6">${ICONES.alliances}</svg><div class="cont">
+${entete("Jusqu'au grand jour", esc(g(C,"compte.titre")||"Le compte à rebours"))}
+<div class="grille-cpt revele" id="cpt">
+<div class="case"><b id="cJ">00</b><small class="petit">Jours</small></div>
+<div class="case"><b id="cH">00</b><small class="petit">Heures</small></div>
+<div class="case"><b id="cM">00</b><small class="petit">Minutes</small></div>
+<div class="case"><b id="cS">00</b><small class="petit">Secondes</small></div>
+</div>
+<p class="fini" id="cFini" hidden>${esc(g(C,"compte.fin"))}</p>
+<p class="date-longue">${esc(fmtDate(g(C,"date.jour"),{weekday:"long",day:"numeric",month:"long",year:"numeric"}))}</p>
+</div></section>`;
+}
+function lancerCompte(){
+clearInterval(minuteur); const cible = dateJ(); if (!cible || !$("#cpt")) return;
+const pad = n => String(n).padStart(2,"0");
+const tic = () => {
+const ms = cible - Date.now();
+if (ms <= 0) { clearInterval(minuteur); $("#cpt").hidden = true; $("#cFini").hidden = false; return; }
+const s = Math.floor(ms/1000);
+$("#cJ").textContent = pad(Math.floor(s/86400)); $("#cH").textContent = pad(Math.floor(s%86400/3600));
+$("#cM").textContent = pad(Math.floor(s%3600/60)); $("#cS").textContent = pad(s%60);
+};
+tic(); minuteur = setInterval(tic, 1000);
+}
+function sProgramme(){
+const et = g(C,"programme.etapes",[]); if (!et.length) return "";
+const sansHeure = et.every(e => !e.heure);
+return `<section id="programme" class="fond-champ"><div class="cont">
+${entete("Déroulement", esc(g(C,"programme.titre")||"Le programme"), g(C,"programme.sousTitre"))}
+<div class="ligne-temps">${et.map(e=>`<div class="etape revele"><div class="pastille">${ico(e.icone)}</div>
+${e.heure?`<p class="heure">${esc(e.heure.replace(":","H"))}</p>`:""}<h3>${esc(e.titre)}</h3>${e.description?`<p>${esc(e.description)}</p>`:""}</div>`).join("")}</div>
+${sansHeure?`<p class="note-horaire revele">Les horaires vous seront communiqués prochainement.</p>`:""}
+</div></section>`;
+}
+function sPratique(){
+const p = g(C,"pratique",{}), nom = g(C,"lieu.nom"), adr = g(C,"lieu.adresse");
+const cible = [nom, adr].filter(Boolean).join(", ");
+const carte = (ic, t, v) => `<div class="carte revele">${ico(ic,"ic")}<h3>${t}</h3>${v?`<p>${esc(v)}</p>`:`<p class="vide">Informations à venir.</p>`}</div>`;
+return `<section id="pratique"><div class="cont">
+${entete("Pour vous guider", esc(p.titre||"Informations pratiques"))}
+<div class="cartes">${carte("voiture","Transport",p.transport)}${carte("lit","Hébergement",p.hebergement)}${p.tenue?carte("cintre","Tenue",p.tenue):""}</div>
+<div class="carte-lieu revele"><div class="haut">${ico("epingle","ic")}
+<p class="petit or" style="margin:10px 0 6px">Localisation</p>
+<h3>${esc(nom||"Lieu à confirmer")}</h3><p class="adr">${esc(adr||(nom?"":"Le lieu vous sera communiqué prochainement."))}</p>
+${cible?`<a class="btn-noir" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(cible)}">${ico("epingle")}Obtenir l'itinéraire</a>`:""}</div>
+${cible?`<iframe title="Carte du lieu" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(cible)}&z=15&output=embed"></iframe>`:""}
+</div></div></section>`;
+}
+function sGalerie(){
+photosGal = g(C,"galerie.photos",[]).filter(p => urlSure(p.url));
+const tuiles = photosGal.length
+? photosGal.map((p,i)=>`<figure class="tuile revele" data-i="${i}" tabindex="0" role="button" aria-label="Agrandir la photo"><img src="${esc(p.url)}" alt="${esc(p.legende||"Souvenir")}" loading="lazy">${p.legende?`<figcaption>${esc(p.legende)}</figcaption>`:""}</figure>`).join("")
+: Array.from({length:6},()=>`<div class="tuile vide revele">${esc(initiales())}</div>`).join("");
+return `<section id="galerie" class="fond-champ"><div class="cont">
+${entete("Galerie", esc(g(C,"galerie.titre")||"Notre histoire"), g(C,"galerie.sousTitre"))}
+<div class="galerie">${tuiles}</div></div></section>`;
+}
+const CLE_LOCALE = () => "rsvp-" + SLUG;
+function lireLocal(){ try { return JSON.parse(localStorage.getItem(CLE_LOCALE())||"null"); } catch { return null; } }
+function sRsvp(){
+const r = g(C,"rsvp",{}), lim = r.dateLimite;
+return `<section id="rsvp"><div class="cont">
+${entete("RSVP", esc(r.titre||"Confirmez votre présence"), r.sousTitre)}
+${lim?`<p class="limite">Réponse souhaitée avant le ${esc(fmtDate(lim,{day:"numeric",month:"long",year:"numeric"}))}</p>`:""}
+<div class="boite revele" id="boiteRsvp"></div></div></section>`;
+}
+function vueMerci(present, dejaEnvoye){
+const m = g(C,"merci",{}), ph = urlSure(m.photo) || urlSure(g(C,"presentation.photo")) || urlSure(g(C,"couverture.photo"));
+$("#boiteRsvp").innerHTML = `<div class="merci-vue">
+<div class="photo-merci"><div style="${ph?`background-image:url('${esc(ph)}')`:""}">${ph?"":esc(initiales())}</div></div>
+${dejaEnvoye?`<p class="petit or" style="margin-bottom:12px">Votre réponse est bien enregistrée</p>`:""}
+<h3>${esc(m.titre||"Merci pour votre réponse.")}</h3>
+<p>${esc(present===false ? "Nous avons bien noté que vous ne pourrez pas être des nôtres. Merci de nous avoir prévenus, vous serez dans nos pensées." : (m.texte||""))}</p>
+<p style="margin-top:22px">${esc(m.signature||"")}</p>
+<p class="sig">${esc(g(C,"couple.prenom1"))} &amp; ${esc(g(C,"couple.prenom2"))}</p></div>`;
+}
+function formulaireRsvp(){
+const loc = lireLocal(); if (loc && !window.APERCU) return vueMerci(loc.presence, true);
+if (EV.ouvert === false) { $("#boiteRsvp").innerHTML = `<p style="text-align:center;font-style:italic">Les confirmations sont désormais closes. Pour toute question, contactez directement les organisateurs.</p>`; return; }
+const r = g(C,"rsvp",{}), qs = r.questions || [], tel = r.telephone || "facultatif";
+const champQ = q => {
+const ob = q.obligatoire ? ' <span class="req">*</span>' : "";
+let inner = "";
+if (q.type === "choix") {
+const opts = [...(q.options||[]), ...(q.autre ? ["Autre"] : [])];
+inner = `<div class="lab">${esc(q.label)}${ob}</div><div class="choix">${opts.map(o=>`<label><input type="radio" name="q_${esc(q.id)}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div>
+${q.autre?`<div class="champ" data-autre="${esc(q.id)}" hidden style="margin:14px 0 0"><input type="text" maxlength="200" placeholder="Précisez…" aria-label="Précisez"></div>`:""}`;
+} else if (q.type === "nombre") {
+const mn = q.min ?? 1, mx = q.max ?? 20;
+inner = `<label for="q_${esc(q.id)}">${esc(q.label)}${ob}</label><div class="compteur"><button type="button" data-d="-1" aria-label="Moins">−</button><input type="number" id="q_${esc(q.id)}" inputmode="numeric" min="${mn}" max="${mx}" value="${mn}"><button type="button" data-d="1" aria-label="Plus">+</button></div>`;
+} else if (q.type === "paragraphe") {
+inner = `<label for="q_${esc(q.id)}">${esc(q.label)}${ob}</label><textarea id="q_${esc(q.id)}" maxlength="1000"></textarea>`;
+} else {
+inner = `<label for="q_${esc(q.id)}">${esc(q.label)}${ob}</label><input type="text" id="q_${esc(q.id)}" maxlength="200">`;
+}
+return `<div class="champ" data-q="${esc(q.id)}">${inner}</div>`;
+};
+$("#boiteRsvp").innerHTML = `<form id="formRsvp" novalidate>
+<div class="champ"><label for="fNom">Nom complet <span class="req">*</span></label><input type="text" id="fNom" maxlength="120" autocomplete="name" required></div>
+<div class="champ"><div class="lab">Serez-vous présent(e) ? <span class="req">*</span></div><div class="choix">
+<label><input type="radio" name="presence" value="oui"><span>Oui, avec plaisir</span></label>
+<label><input type="radio" name="presence" value="non"><span>Non, je ne pourrai pas</span></label></div></div>
+${tel!=="masque"?`<div class="champ"><label for="fTel">Numéro de téléphone${tel==="obligatoire"?' <span class="req">*</span>':" (facultatif)"}</label><input type="tel" id="fTel" maxlength="30" autocomplete="tel" placeholder="+243 …"></div>`:""}
+${qs.map(champQ).join("")}
+<p class="erreur" id="errRsvp" role="alert" hidden></p>
+<button class="btn-noir" id="envoyer" type="submit">${esc(r.bouton||"ENVOYER MA CONFIRMATION")}</button>
+</form>`;
+const f = $("#formRsvp");
+const lireQ = q => {
+const box = f.querySelector(`[data-q="${CSS.escape(q.id)}"]`);
+if (q.type === "choix") { const c = box.querySelector("input[type=radio]:checked"); if (!c) return ""; if (c.value === "Autre" && q.autre) { const t = box.querySelector("[data-autre] input").value.trim(); return t ? "Autre : " + t : "Autre"; } return c.value; }
+const el = box.querySelector("input,textarea"); return el ? el.value.trim() : "";
+};
+const presence = () => { const c = f.querySelector("input[name=presence]:checked"); return c ? c.value === "oui" : null; };
+const visible = q => {
+const p = presence();
+if (q.siPresent && p !== true) return false;
+if (q.condition && q.condition.id) { const cq = qs.find(x => x.id === q.condition.id); if (!cq || !visible(cq) || lireQ(cq) !== q.condition.valeur) return false; }
+return true;
+};
+const maj = () => {
+qs.forEach(q => { f.querySelector(`[data-q="${CSS.escape(q.id)}"]`).hidden = !visible(q); });
+f.querySelectorAll("[data-autre]").forEach(a => { const c = a.parentElement.querySelector("input[type=radio]:checked"); a.hidden = !(c && c.value === "Autre"); });
+};
+f.addEventListener("change", maj); f.addEventListener("input", maj);
+f.querySelectorAll(".compteur button").forEach(b => b.addEventListener("click", () => { const i = b.parentElement.querySelector("input"); const v = Math.min(+i.max, Math.max(+i.min, (+i.value||0) + +b.dataset.d)); i.value = v; }));
+maj();
+f.addEventListener("submit", async ev => {
+ev.preventDefault(); const err = $("#errRsvp"); err.hidden = true;
+const montrer = t => { err.textContent = t; err.hidden = false; };
+const nom = $("#fNom").value.trim(), p = presence(), telV = $("#fTel") ? $("#fTel").value.trim() : "";
+if (nom.length < 2) return montrer("Merci d'indiquer votre nom complet.");
+if (p === null) return montrer("Merci d'indiquer si vous serez présent(e).");
+if (tel === "obligatoire" && telV.replace(/\D/g,"").length < 9) return montrer("Merci d'indiquer un numéro de téléphone valide.");
+const details = {}; let total = p ? 1 : 0, message = "";
+for (const q of qs) {
+if (!visible(q)) continue;
+const v = lireQ(q);
+if (q.obligatoire && !v) return montrer(`Merci de répondre à : « ${q.label} »`);
+if (q.role === "total") { const n = parseInt(v,10); if (p && (!n || n < (q.min ?? 1))) return montrer(`Merci d'indiquer le nombre de personnes.`); total = p ? n : 0; }
+if (q.role === "message") { message = v; continue; }
+if (v) details[q.label] = v;
+}
+if (window.APERCU) { toast("Aperçu : la réponse n'est pas enregistrée."); return; }
+const b = $("#envoyer"); b.disabled = true; b.textContent = "Envoi en cours…";
+try {
+await rpc("repondre", {p_evenement: SLUG, p_nom: nom, p_presence: p, p_total: total, p_telephone: telV || null, p_details: details, p_message: message || null, p_cle: CLE || null});
+try { localStorage.setItem(CLE_LOCALE(), JSON.stringify({nom, presence: p})); } catch {}
+vueMerci(p, false); $("#rsvp").scrollIntoView({behavior:"smooth"});
+} catch (e) {
+const M = {DEJA_REPONDU:"Une réponse a déjà été enregistrée à ce nom ou avec ce numéro. Pour la modifier, contactez directement les organisateurs.", TELEPHONE_INVALIDE:"Merci d'indiquer un numéro de téléphone valide.", NOM_MANQUANT:"Merci d'indiquer votre nom complet.", EVENEMENT_FERME:"Les confirmations sont closes.", LIEN_NON_AUTORISE:"Ce lien ne permet pas de confirmer. Demandez le lien officiel aux organisateurs.", LIMITE_ATTEINTE:"Le nombre maximum de réponses est atteint."};
+montrer(M[e.message] || "L'envoi n'a pas abouti. Vérifiez votre connexion internet et réessayez.");
+b.disabled = false; b.textContent = g(C,"rsvp.bouton") || "ENVOYER MA CONFIRMATION";
+}
+});
+}
+function sFinale(){
+const fz = g(C,"finale",{});
+return `<section id="finale" class="fond-noir"><svg class="brin-g" viewBox="0 0 160 60"><use href="#brin"/></svg><svg class="brin-d" viewBox="0 0 160 60"><use href="#brin"/></svg>
+<div class="revele"><p class="petit please">${esc(fz.haut||"PLEASE")}</p>
+<p class="gros">${esc(fz.grand||"RSVP")}</p>
+${fz.limite?`<p class="lim">${esc(fz.limite)}</p>`:""}
+<a class="btn-or" href="#rsvp">${esc(fz.bouton||"CONFIRMER MA PRÉSENCE")}</a>
+<p class="merci-script">${esc(fz.script||"Thank you")}</p>
+<p class="noms-fin">${esc((g(C,"couple.prenom1")+" & "+g(C,"couple.prenom2")).toUpperCase())}</p>
+${g(C,"couple.hashtag")?`<p class="petit" style="margin-top:14px;color:var(--or2)">${esc(g(C,"couple.hashtag"))}</p>`:""}</div></section>`;
+}
+function sPied(){
+return `<footer>
+<div class="partage"><a id="pWa" target="_blank" rel="noopener">${WA}Partager sur WhatsApp</a><button type="button" id="pCopie">${ico("coeur")}Copier le lien</button></div>
+<a class="signature" href="https://wa.me/243844195449" target="_blank" rel="noopener" aria-label="EL TSHI DIGIT, +243 844 195 449"><span>Invitation digitale réalisée par</span>${LOGO}<span class="tel">+243 844 195 449</span></a>
+</footer>`;
+}
+function rendre(){
+rendreCouverture();
+$("#app").innerHTML = sPresentation() + sCompte() + sProgramme() + sPratique() + sGalerie() + sRsvp() + sFinale() + sPied();
+formulaireRsvp(); lancerCompte();
+const msg = (g(C,"partage.message") || "Découvrez notre invitation :") + " " + lienPage();
+const wa = "https://wa.me/?text=" + encodeURIComponent(msg);
+$("#pWa").href = wa; $("#flottant").href = wa; $("#flottant").innerHTML = WA;
+$("#pCopie").onclick = async () => { try { await navigator.clipboard.writeText(lienPage()); toast("Lien copié !"); } catch { prompt("Copiez ce lien :", lienPage()); } };
+document.querySelectorAll(".tuile[data-i]").forEach(t => { const o = () => ouvrirVis(+t.dataset.i); t.onclick = o; t.onkeydown = e => { if (e.key === "Enter") o(); }; });
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("vu"); io.unobserve(e.target); } }), {threshold:.12});
+document.querySelectorAll(".revele").forEach(el => io.observe(el));
+}
+function ouvrirVis(i){ idxVis = (i + photosGal.length) % photosGal.length; const v = $("#visionneuse"), p = photosGal[idxVis]; v.querySelector("img").src = p.url; v.querySelector("img").alt = p.legende || "Photo"; v.querySelector("p").textContent = p.legende || ""; v.hidden = false; }
+$("#visionneuse .fermer").onclick = () => $("#visionneuse").hidden = true;
+$("#visionneuse .prec").onclick = () => ouvrirVis(idxVis - 1);
+$("#visionneuse .suiv").onclick = () => ouvrirVis(idxVis + 1);
+$("#visionneuse").onclick = e => { if (e.target.id === "visionneuse") e.target.hidden = true; };
+document.addEventListener("keydown", e => { if ($("#visionneuse").hidden) return; if (e.key === "Escape") $("#visionneuse").hidden = true; if (e.key === "ArrowLeft") ouvrirVis(idxVis-1); if (e.key === "ArrowRight") ouvrirVis(idxVis+1); });
+function verrouiller(lienPerime){
+VERROU = true;
+const num = (EV.acces && EV.acces.numero) || "+243 844 195 449", chiffres = num.replace(/\D/g, "");
+const noms = `${g(C,"couple.prenom1")} & ${g(C,"couple.prenom2")}`;
+$("#ouvrir").hidden = true; $("#flottant").hidden = true;
+const v = $("#verrou"); v.hidden = false;
+v.innerHTML = `<p>${lienPerime ? "Ce lien n'est plus valide." : "Cette invitation est personnelle."} Pour découvrir le programme et confirmer votre présence, utilisez le lien officiel envoyé par les organisateurs.</p>
+<a class="btn-or" target="_blank" rel="noopener" href="https://wa.me/${chiffres}?text=${encodeURIComponent("Bonjour, je souhaiterais recevoir le lien de l'invitation de " + noms + ".")}">${WA}Demander mon invitation</a>`;
+}
+function ouvrir(){
+if (VERROU) return;
+const c = $("#couv"); c.classList.add("ouvert"); document.body.classList.remove("ferme"); $("#app").hidden = false;
+setTimeout(() => { c.classList.add("parti"); $("#flottant").classList.add("vu"); }, 1200);
+window.scrollTo(0, 0);
+}
+$("#ouvrir").onclick = ouvrir;
+window.addEventListener("message", e => {
+if (e.origin !== location.origin || !e.data || e.data.type !== "apercu") return;
+window.APERCU = true; C = e.data.config || {}; if (VERROU) { VERROU = false; $("#ouvrir").hidden = false; $("#verrou").hidden = true; $("#flottant").hidden = false; } rendre();
+if (e.data.ouvrir && !$("#couv").classList.contains("ouvert")) ouvrir();
+});
+async function demarrer(){
+if (!SLUG) { location.replace("/"); return; }
+try {
+const d = await rpc("config_evenement", {p_slug: SLUG, p_cle: CLE || null});
+if (!d) throw new Error("INTROUVABLE");
+EV = d; C = d.config || {};
+if (d.slug && d.slug !== SLUG) { const ancien = SLUG; SLUG = d.slug; try { const v = localStorage.getItem("rsvp-" + ancien); if (v && !localStorage.getItem("rsvp-" + SLUG)) localStorage.setItem("rsvp-" + SLUG, v); } catch {} try { history.replaceState(null, "", "/" + SLUG + location.search.replace(/([?&])e=[^&]*&?/, "$1").replace(/[?&]$/, "")); } catch {} }
+const autorise = !d.acces || d.acces.ok;
+try { if (autorise && CLE) localStorage.setItem("cle-" + SLUG, CLE); if (!autorise) localStorage.removeItem("cle-" + SLUG); } catch {}
+if (autorise && new URLSearchParams(location.search).has("k")) { try { const q = new URLSearchParams(location.search); q.delete("k"); history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "")); } catch {} }
+if (autorise) rendre(); else { rendreCouverture(); verrouiller(!!CLE); }
+$("#couv").hidden = false;
+if (autorise && new URLSearchParams(location.search).has("direct")) ouvrir();
+} catch (e) {
+$("#introuvable").hidden = false; document.body.classList.remove("ferme");
+} finally { $("#charge").classList.add("fin"); }
+}
+demarrer();
+</script>
+</body>
+</html>
