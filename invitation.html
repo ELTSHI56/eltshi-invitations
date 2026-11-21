@@ -515,6 +515,7 @@ if (q.role === "total") { const n = parseInt(v,10); if (p && (!n || n < (q.min ?
 if (q.role === "message") { message = v; continue; }
 if (v) details[q.label] = v;
 }
+if (INVI && p && !qs.some(q => q.role === "total")) total = INVI.places;
 if (window.APERCU) { toast("Aperçu : la réponse n'est pas enregistrée."); return; }
 const b = $("#envoyer"); b.disabled = true; b.textContent = "Envoi en cours…";
 try {
