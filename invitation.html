@@ -407,7 +407,7 @@ const cible = [nom, adr].filter(Boolean).join(", ");
 const carte = (ic, t, v) => `<div class="carte revele">${ico(ic,"ic")}<h3>${t}</h3>${v?`<p>${esc(v)}</p>`:`<p class="vide">Informations à venir.</p>`}</div>`;
 return `<section id="pratique"><div class="cont">
 ${entete("Pour vous guider", esc(p.titre||"Informations pratiques"))}
-<div class="cartes">${carte("voiture","Transport",p.transport)}${carte("lit","Hébergement",p.hebergement)}${p.tenue?carte("cintre","Tenue",p.tenue):""}</div>
+${(p.transport||p.hebergement||p.tenue)?`<div class="cartes">${p.transport?carte("voiture","Transport",p.transport):""}${p.hebergement?carte("lit","Hébergement",p.hebergement):""}${p.tenue?carte("cintre","Tenue",p.tenue):""}</div>`:""}
 <div class="carte-lieu revele"><div class="haut">${ico("epingle","ic")}
 <p class="petit or" style="margin:10px 0 6px">Localisation</p>
 <h3>${esc(nom||"Lieu à confirmer")}</h3><p class="adr">${esc(adr||(nom?"":"Le lieu vous sera communiqué prochainement."))}</p>
