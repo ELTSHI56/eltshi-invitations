@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/:slug([a-z0-9-]{3,60})", "destination": "/api/page?slug=:slug" }
+  ],
+  "headers": [
+    { "source": "/admin(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] }
+  ]
+}
