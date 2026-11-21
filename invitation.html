@@ -277,6 +277,7 @@ const $ = s => document.querySelector(s);
 const g = (o, p, d="") => p.split(".").reduce((a, k) => (a && a[k] !== undefined && a[k] !== null) ? a[k] : undefined, o) ?? d;
 const urlSure = u => /^https:\/\//.test(u || "") ? u : "";
 let C = {}, EV = {}, minuteur = null, photosGal = [], idxVis = 0, VERROU = false;
+let INV = (() => { const i = new URLSearchParams(location.search).get("i"); if (i) return i.trim().toLowerCase(); try { return localStorage.getItem("inv-" + SLUG) || ""; } catch { return ""; } })();
 let CLE = (() => { const k = new URLSearchParams(location.search).get("k"); if (k) return k.trim(); try { return localStorage.getItem("cle-" + SLUG) || ""; } catch { return ""; } })();
 function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("vu"); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove("vu"),2600); }
 function dateJ(){ const j=g(C,"date.jour"); if(!j) return null; const h=g(C,"date.heure")||"00:00"; const d=new Date(`${j}T${h}:00${g(C,"date.fuseau")||"+02:00"}`); return isNaN(d)?null:d; }
@@ -403,7 +404,9 @@ ${dejaEnvoye?`<p class="petit or" style="margin-bottom:12px">Votre réponse est 
 <p class="sig">${esc(g(C,"couple.prenom1"))} &amp; ${esc(g(C,"couple.prenom2"))}</p></div>`;
 }
 function formulaireRsvp(){
-const loc = lireLocal(); if (loc && !window.APERCU) return vueMerci(loc.presence, true);
+const INVI = !window.APERCU && window.INVITE;
+if (INVI && INVI.repondu) return vueMerci(INVI.presence, true);
+const loc = INVI ? null : lireLocal(); if (loc && !window.APERCU) return vueMerci(loc.presence, true);
 if (EV.ouvert === false) { $("#boiteRsvp").innerHTML = `<p style="text-align:center;font-style:italic">Les confirmations sont désormais closes. Pour toute question, contactez directement les organisateurs.</p>`; return; }
 const r = g(C,"rsvp",{}), qs = r.questions || [], tel = r.telephone || "facultatif";
 const champQ = q => {
@@ -424,7 +427,8 @@ inner = `<label for="q_${esc(q.id)}">${esc(q.label)}${ob}</label><input type="te
 return `<div class="champ" data-q="${esc(q.id)}">${inner}</div>`;
 };
 $("#boiteRsvp").innerHTML = `<form id="formRsvp" novalidate>
-<div class="champ"><label for="fNom">Nom complet <span class="req">*</span></label><input type="text" id="fNom" maxlength="120" autocomplete="name" required></div>
+${INVI?`<p class="petit or" style="text-align:center;margin-bottom:18px">Invitation personnelle pour <b>${esc(INVI.nom)}</b> · ${INVI.places} place${INVI.places>1?"s":""}</p>`:""}
+<div class="champ"><label for="fNom">Nom complet <span class="req">*</span></label><input type="text" id="fNom" maxlength="120" autocomplete="name" required ${INVI?`value="${esc(INVI.nom)}" readonly`:""}></div>
 <div class="champ"><div class="lab">Serez-vous présent(e) ? <span class="req">*</span></div><div class="choix">
 <label><input type="radio" name="presence" value="oui"><span>Oui, avec plaisir</span></label>
 <label><input type="radio" name="presence" value="non"><span>Non, je ne pourrai pas</span></label></div></div>
@@ -450,6 +454,7 @@ const maj = () => {
 qs.forEach(q => { f.querySelector(`[data-q="${CSS.escape(q.id)}"]`).hidden = !visible(q); });
 f.querySelectorAll("[data-autre]").forEach(a => { const c = a.parentElement.querySelector("input[type=radio]:checked"); a.hidden = !(c && c.value === "Autre"); });
 };
+if (INVI) qs.filter(q => q.role === "total").forEach(q => { const i = f.querySelector(`[data-q="${CSS.escape(q.id)}"] input`); if (i) { i.max = INVI.places; if (+i.value > INVI.places) i.value = INVI.places; const l = f.querySelector(`[data-q="${CSS.escape(q.id)}"] label`); if (l) l.insertAdjacentHTML("beforeend", ` <span style="font-weight:400">(maximum ${INVI.places})</span>`); } });
 f.addEventListener("change", maj); f.addEventListener("input", maj);
 f.querySelectorAll(".compteur button").forEach(b => b.addEventListener("click", () => { const i = b.parentElement.querySelector("input"); const v = Math.min(+i.max, Math.max(+i.min, (+i.value||0) + +b.dataset.d)); i.value = v; }));
 maj();
@@ -472,11 +477,12 @@ if (v) details[q.label] = v;
 if (window.APERCU) { toast("Aperçu : la réponse n'est pas enregistrée."); return; }
 const b = $("#envoyer"); b.disabled = true; b.textContent = "Envoi en cours…";
 try {
-await rpc("repondre", {p_evenement: SLUG, p_nom: nom, p_presence: p, p_total: total, p_telephone: telV || null, p_details: details, p_message: message || null, p_cle: CLE || null});
-try { localStorage.setItem(CLE_LOCALE(), JSON.stringify({nom, presence: p})); } catch {}
+await rpc("repondre_v3", {p_evenement: SLUG, p_nom: nom, p_presence: p, p_total: INVI ? Math.min(total, INVI.places) : total, p_telephone: telV || null, p_details: details, p_message: message || null, p_cle: CLE || null, p_invite: INVI ? INV : null});
+if (INVI) { INVI.repondu = true; INVI.presence = p; }
+try { if (!INVI) localStorage.setItem(CLE_LOCALE(), JSON.stringify({nom, presence: p})); } catch {}
 vueMerci(p, false); $("#rsvp").scrollIntoView({behavior:"smooth"});
 } catch (e) {
-const M = {DEJA_REPONDU:"Une réponse a déjà été enregistrée à ce nom ou avec ce numéro. Pour la modifier, contactez directement les organisateurs.", TELEPHONE_INVALIDE:"Merci d'indiquer un numéro de téléphone valide.", NOM_MANQUANT:"Merci d'indiquer votre nom complet.", EVENEMENT_FERME:"Les confirmations sont closes.", LIEN_NON_AUTORISE:"Ce lien ne permet pas de confirmer. Demandez le lien officiel aux organisateurs.", LIMITE_ATTEINTE:"Le nombre maximum de réponses est atteint."};
+const M = {LIEN_PERSONNEL_REQUIS:"Les confirmations se font avec votre lien personnel. Demandez-le aux organisateurs.", LIEN_NON_AUTORISE:"Ce lien d'invitation n'est plus valide. Demandez un nouveau lien aux organisateurs.", DEJA_REPONDU: INVI ? "Une réponse a déjà été enregistrée avec ce lien personnel. Pour la modifier, contactez directement les organisateurs." : "Une réponse a déjà été enregistrée à ce nom ou avec ce numéro. Pour la modifier, contactez directement les organisateurs.", TELEPHONE_INVALIDE:"Merci d'indiquer un numéro de téléphone valide.", NOM_MANQUANT:"Merci d'indiquer votre nom complet.", EVENEMENT_FERME:"Les confirmations sont closes.", LIEN_NON_AUTORISE:"Ce lien ne permet pas de confirmer. Demandez le lien officiel aux organisateurs.", LIMITE_ATTEINTE:"Le nombre maximum de réponses est atteint."};
 montrer(M[e.message] || "L'envoi n'a pas abouti. Vérifiez votre connexion internet et réessayez.");
 b.disabled = false; b.textContent = g(C,"rsvp.bouton") || "ENVOYER MA CONFIRMATION";
 }
@@ -541,14 +547,17 @@ if (e.data.ouvrir && !$("#couv").classList.contains("ouvert")) ouvrir();
 async function demarrer(){
 if (!SLUG) { location.replace("/"); return; }
 try {
-const d = await rpc("config_evenement", {p_slug: SLUG, p_cle: CLE || null});
+const d = await rpc("config_evenement_v2", {p_slug: SLUG, p_cle: CLE || null, p_invite: INV || null});
 if (!d) throw new Error("INTROUVABLE");
 EV = d; C = d.config || {};
 if (d.slug && d.slug !== SLUG) { const ancien = SLUG; SLUG = d.slug; try { const v = localStorage.getItem("rsvp-" + ancien); if (v && !localStorage.getItem("rsvp-" + SLUG)) localStorage.setItem("rsvp-" + SLUG, v); } catch {} try { history.replaceState(null, "", "/" + SLUG + location.search.replace(/([?&])e=[^&]*&?/, "$1").replace(/[?&]$/, "")); } catch {} }
 const autorise = !d.acces || d.acces.ok;
 try { if (autorise && CLE) localStorage.setItem("cle-" + SLUG, CLE); if (!autorise) localStorage.removeItem("cle-" + SLUG); } catch {}
+const INVITE = d.invite && !d.invite.invalide ? d.invite : null; window.INVITE = INVITE;
+try { if (INVITE && INV) localStorage.setItem("inv-" + SLUG, INV); if (d.invite && d.invite.invalide) { localStorage.removeItem("inv-" + SLUG); INV = ""; } } catch {}
+if (autorise && new URLSearchParams(location.search).has("i")) { try { const q = new URLSearchParams(location.search); q.delete("i"); history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "")); } catch {} }
 if (autorise && new URLSearchParams(location.search).has("k")) { try { const q = new URLSearchParams(location.search); q.delete("k"); history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "")); } catch {} }
-if (autorise) rendre(); else { rendreCouverture(); verrouiller(!!CLE); }
+if (autorise) rendre(); else { rendreCouverture(); verrouiller(!!CLE || !!(d.invite && d.invite.invalide)); }
 $("#couv").hidden = false;
 if (autorise && new URLSearchParams(location.search).has("direct")) ouvrir();
 } catch (e) {

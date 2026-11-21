@@ -125,7 +125,7 @@ td .det{font-size:12px;color:var(--doux)}
 <script>
 const SB = { url: "https://vtizxpfxsozbotvkjsrg.supabase.co", cle: "sb_publishable_kPpkOa8UqHiuaSqsF6GqGQ_36GJcKt8" };
 const ICONES = {accueil:"Accueil",alliances:"Alliances",photo:"Appareil photo",cocktail:"Cocktail",micro:"Micro / discours",diner:"Dîner",musique:"Musique",lune:"Lune / fin",coeur:"Cœur",gateau:"Gâteau",etoile:"Étoile",eglise:"Église",voiture:"Voiture",horloge:"Horloge",calendrier:"Calendrier",epingle:"Lieu"};
-const ERR = {CODE_INCORRECT:"Code d'accès incorrect.",CODE_MAITRE_INCORRECT:"Code maître incorrect.",ADRESSE_INVALIDE:"Adresse invalide : lettres minuscules, chiffres et tirets uniquement (3 à 60).",ADRESSE_DEJA_PRISE:"Cette adresse est déjà utilisée.",ADRESSE_RESERVEE:"Ce mot est réservé, choisissez une autre adresse.",NUMERO_INVALIDE:"Numéro invalide : indiquez le numéro complet avec l'indicatif (ex. +243 844 195 449).",CODE_CLIENT_TROP_COURT:"Le code client doit faire au moins 6 caractères.",CONFIG_TROP_GRANDE:"Contenu trop volumineux.",FORMAT_NON_ACCEPTE:"Format non accepté (JPG, PNG ou WEBP).",TAILLE_INVALIDE:"Photo trop lourde."};
+const ERR = {CODE_INCORRECT:"Code d'accès incorrect.",LISTE_INVALIDE:"Liste invalide (500 familles maximum à la fois).",LIMITE_ATTEINTE:"Limite atteinte (1000 familles maximum).",CODE_MAITRE_INCORRECT:"Code maître incorrect.",ADRESSE_INVALIDE:"Adresse invalide : lettres minuscules, chiffres et tirets uniquement (3 à 60).",ADRESSE_DEJA_PRISE:"Cette adresse est déjà utilisée.",ADRESSE_RESERVEE:"Ce mot est réservé, choisissez une autre adresse.",NUMERO_INVALIDE:"Numéro invalide : indiquez le numéro complet avec l'indicatif (ex. +243 844 195 449).",CODE_CLIENT_TROP_COURT:"Le code client doit faire au moins 6 caractères.",CONFIG_TROP_GRANDE:"Contenu trop volumineux.",FORMAT_NON_ACCEPTE:"Format non accepté (JPG, PNG ou WEBP).",TAILLE_INVALIDE:"Photo trop lourde."};
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -160,7 +160,7 @@ finally{ b.disabled=false; }
 }
 $("#deco").onclick = () => { if(S.sale && !confirm("Des modifications ne sont pas enregistrées. Quitter quand même ?")) return; try{sessionStorage.removeItem("adm");}catch{} location.href = location.pathname; };
 window.addEventListener("beforeunload", e => { if(S.sale){ e.preventDefault(); e.returnValue=""; } });
-const ONGLETS = [["textes","Textes"],["programme","Programme"],["infos","Lieu & infos"],["photos","Photos"],["formulaire","Formulaire"],["reponses","Réponses"],["reglages","Partage & réglages"]];
+const ONGLETS = [["textes","Textes"],["programme","Programme"],["infos","Lieu & infos"],["photos","Photos"],["formulaire","Formulaire"],["invites","Invités"],["reponses","Réponses"],["reglages","Partage & réglages"]];
 function demarrerUI(){
 $("#connexion").hidden = true; $("#ui").hidden = false;
 $("#hTitre").textContent = S.ev.titre; $("#hSlug").textContent = "/" + S.slug + (S.maitre ? " · accès maître" : "");
@@ -176,8 +176,8 @@ majEtat();
 function ouvrirOnglet(k){
 S.onglet = k;
 document.querySelectorAll("#onglets button").forEach(b => b.classList.toggle("actif", b.dataset.o===k));
-$("#bas").hidden = ["reponses","invitations"].includes(k);
-({textes:oTextes, programme:oProgramme, infos:oInfos, photos:oPhotos, formulaire:oFormulaire, reponses:oReponses, reglages:oReglages, invitations:oInvitations}[k] || oTextes)();
+$("#bas").hidden = ["reponses","invitations","invites"].includes(k);
+({textes:oTextes, programme:oProgramme, infos:oInfos, photos:oPhotos, formulaire:oFormulaire, reponses:oReponses, invites:oInvites, reglages:oReglages, invitations:oInvitations}[k] || oTextes)();
 }
 const lienOfficiel = () => location.origin + "/" + S.slug + (S.acces && S.acces.protege ? "?k=" + S.acces.cle : "");
 const srcApercu = () => "/" + S.slug + "?direct=1" + (S.acces && S.acces.cle ? "&k=" + S.acces.cle : "");
@@ -418,6 +418,82 @@ if (b.dataset.a==="haut") [qs[i-1],qs[i]]=[qs[i],qs[i-1]];
 if (b.dataset.a==="bas") [qs[i+1],qs[i]]=[qs[i],qs[i+1]];
 modifie(); oFormulaire(); });
 $("#ajQ").onclick = () => { qs.push({id:"q"+Date.now().toString(36), type:"texte", label:"Nouvelle question", obligatoire:false, siPresent:true}); modifie(); oFormulaire(); };
+}
+/* ---------- Invités : un lien personnel par famille ---------- */
+const lienInvite = j => location.origin + "/" + S.slug + "?i=" + j;
+const telWa = t => { let d = String(t||"").replace(/\D/g,""); if (/^0\d{9}$/.test(d)) d = "243" + d.slice(1); return d.length >= 9 ? d : ""; };
+function msgInvite(x){ const base = get(S.cfg,"partage.message") || "Découvrez notre invitation :"; return `Bonjour ${x.nom},\n${base}\nVotre lien personnel (${x.places} place${x.places>1?"s":""}) : ${lienInvite(x.jeton)}`; }
+async function oInvites(){
+const p = rendrePanneau(`
+<fieldset><legend>Liens personnels par invité</legend>
+<p class="aide" style="margin:4px 0 10px">Chaque famille reçoit <b>son propre lien</b>, avec son nom déjà rempli et son nombre de places. Le lien ne sert qu'à <b>une seule réponse</b>. Si quelqu'un le transfère, la personne qui le reçoit verra l'invitation au nom de la famille d'origine, sans pouvoir répondre une deuxième fois.</p>
+<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;margin:8px 0"><input type="checkbox" id="seuls" style="width:auto;margin-top:3px"><span><b>Liens personnels uniquement</b><br><span class="aide">Activé : le lien général ne permet plus de voir l'invitation complète ni de confirmer. Seuls les liens personnels fonctionnent.</span></span></label>
+<p class="msg" id="msgSeuls"></p></fieldset>
+<fieldset><legend>Ajouter une famille</legend>
+<div style="display:grid;grid-template-columns:2fr 90px 1.3fr auto;gap:8px;align-items:end">
+<div><label class="l" for="iNom">Nom (ex. Famille Mukendi)</label><input type="text" id="iNom" maxlength="120"></div>
+<div><label class="l" for="iPl">Places</label><input type="number" id="iPl" min="1" max="50" value="2"></div>
+<div><label class="l" for="iTel">WhatsApp (facultatif)</label><input type="tel" id="iTel" maxlength="30" placeholder="+243 …"></div>
+<button class="btn" id="iAj" type="button">Ajouter</button></div>
+<details style="margin-top:12px"><summary style="cursor:pointer;font-weight:600">Ajouter plusieurs familles d'un coup</summary>
+<p class="aide">Une famille par ligne : <b>Nom ; places ; WhatsApp</b>. Exemple :<br>Famille Mukendi ; 4 ; 0812345678<br>Papa Jean Lokwa ; 2</p>
+<textarea id="iLot" rows="6" placeholder="Famille Mukendi ; 4 ; 0812345678"></textarea>
+<button class="btn" id="iAjLot" type="button" style="margin-top:8px">Ajouter la liste</button></details>
+<p class="msg" id="msgAj"></p></fieldset>
+<div class="stats" id="iStats"><div class="stat"><b>…</b><span>Chargement</span></div></div>
+<div class="barre-outils"><input type="text" id="iFiltre" placeholder="Rechercher un nom…"><select id="iFiltreS" style="width:auto"><option value="">Tous</option><option value="attente">En attente</option><option value="oui">Présents</option><option value="non">Absents</option></select>
+<button class="btn clair" id="iRafr" type="button">Actualiser</button><button class="btn clair" id="iCsv" type="button">Exporter les liens (Excel/CSV)</button></div>
+<div class="table-wrap"><table><thead><tr><th>Famille</th><th>Places</th><th>WhatsApp</th><th>Réponse</th><th>Lien personnel</th><th></th></tr></thead><tbody id="iTb"><tr><td colspan="6">Chargement…</td></tr></tbody></table></div>`);
+let L = [];
+const charger = async () => {
+try { const r = await rpc("liste_invites",{p_slug:S.slug,p_code:S.code}); L = r.liste || []; $("#seuls").checked = !!r.invites_seuls; afficher(); }
+catch(e){ $("#iTb").innerHTML = `<tr><td colspan="6" class="non">${esc(msgErr(e))}</td></tr>`; }
+};
+const afficher = () => {
+const rep = L.filter(x=>x.repondu), pres = rep.filter(x=>x.presence), att = L.filter(x=>!x.repondu);
+$("#iStats").innerHTML = `<div class="stat"><b>${L.length}</b><span>Familles invitées</span></div><div class="stat"><b>${L.reduce((a,x)=>a+x.places,0)}</b><span>Places prévues</span></div><div class="stat"><b>${pres.reduce((a,x)=>a+(x.total||0),0)}</b><span>Personnes confirmées</span></div><div class="stat"><b>${att.length}</b><span>Familles en attente</span></div>`;
+const f = $("#iFiltre").value.trim().toLowerCase(), fs = $("#iFiltreS").value;
+const V = L.filter(x => (!f || (x.nom+" "+(x.telephone||"")).toLowerCase().includes(f)) && (!fs || (fs==="attente" ? !x.repondu : x.repondu && (fs==="oui")===!!x.presence)));
+$("#iTb").innerHTML = V.length ? V.map(x => { const t = telWa(x.telephone), wa = "https://wa.me/" + t + "?text=" + encodeURIComponent(msgInvite(x));
+return `<tr><td><b>${esc(x.nom)}</b></td><td>${x.places}</td><td>${esc(x.telephone||"")}</td>
+<td>${x.repondu ? (x.presence ? `<span class="oui">Présent · ${x.total}</span>` : `<span class="non">Absent</span>`) : `<span style="color:var(--doux)">En attente</span>`}</td>
+<td style="min-width:220px"><div style="font-size:12px;word-break:break-all;margin-bottom:4px">${esc(lienInvite(x.jeton))}</div>
+<button class="btn mini clair" type="button" data-a="copie" data-id="${x.id}">Copier</button>
+<a class="btn mini" style="background:#25D366;border-color:#25D366;color:#fff" target="_blank" rel="noopener" href="${esc(wa)}">${t ? "Envoyer sur WhatsApp" : "WhatsApp"}</a></td>
+<td style="white-space:nowrap"><button class="btn mini clair" type="button" data-a="modif" data-id="${x.id}">Modifier</button>
+<button class="btn mini clair" type="button" data-a="lien" data-id="${x.id}" title="Crée un nouveau lien : l'ancien ne fonctionnera plus">Nouveau lien</button>
+<button class="btn mini danger" type="button" data-a="suppr" data-id="${x.id}">Supprimer</button></td></tr>`; }).join("")
+: `<tr><td colspan="6" style="text-align:center;color:var(--doux)">${L.length ? "Aucune famille ne correspond." : "Aucune famille pour le moment. Ajoutez votre première famille ci-dessus."}</td></tr>`;
+};
+const ajouter = async liste => {
+const m = $("#msgAj"); m.hidden = true;
+try { const n = await rpc("ajouter_invites",{p_slug:S.slug,p_code:S.code,p_liste:liste}); toast(`${n} famille${n>1?"s":""} ajoutée${n>1?"s":""} ✓`); await charger(); return true; }
+catch(e){ m.textContent = msgErr(e); m.hidden = false; return false; }
+};
+$("#iAj").onclick = async () => { const nom = $("#iNom").value.trim(); if (nom.length < 2) { $("#iNom").focus(); return; }
+if (await ajouter([{nom, places: +$("#iPl").value || 1, telephone: $("#iTel").value.trim()}])) { $("#iNom").value = ""; $("#iTel").value = ""; $("#iNom").focus(); } };
+$("#iAjLot").onclick = async () => { const liste = $("#iLot").value.split(/\n+/).map(l => l.split(/[;\t]/).map(x=>x.trim())).filter(a => a[0] && a[0].length > 1).map(a => ({nom:a[0], places: parseInt(a[1],10) || 1, telephone: a[2] || ""}));
+if (!liste.length) return; if (await ajouter(liste)) $("#iLot").value = ""; };
+$("#seuls").onchange = async e => { const v = e.target.checked;
+if (v && !confirm("Activer « liens personnels uniquement » ? Le lien général ne permettra plus de confirmer : envoyez bien un lien personnel à chaque famille.")) { e.target.checked = false; return; }
+try { await rpc("reglage_invites_seuls",{p_slug:S.slug,p_code:S.code,p_actif:v}); toast(v ? "Seuls les liens personnels fonctionnent ✓" : "Le lien général fonctionne à nouveau ✓"); $("#ifr").src = srcApercu(); }
+catch(err){ e.target.checked = !v; alert(msgErr(err)); } };
+$("#iTb").onclick = async e => { const b = e.target.closest("[data-a]"); if (!b) return; const x = L.find(y => y.id == b.dataset.id); if (!x) return;
+if (b.dataset.a === "copie") { try { await navigator.clipboard.writeText(lienInvite(x.jeton)); toast("Lien copié !"); } catch { prompt("Copiez ce lien :", lienInvite(x.jeton)); } }
+if (b.dataset.a === "modif") { const nom = prompt("Nom de la famille :", x.nom); if (nom === null) return; const pl = prompt("Nombre de places :", x.places); if (pl === null) return; const tel = prompt("WhatsApp (laisser vide si aucun) :", x.telephone || ""); if (tel === null) return;
+try { await rpc("modifier_invite",{p_slug:S.slug,p_code:S.code,p_id:x.id,p_nom:nom,p_places:parseInt(pl,10)||x.places,p_telephone:tel}); toast("Modifié ✓"); charger(); } catch(err){ alert(msgErr(err)); } }
+if (b.dataset.a === "lien") { if (!confirm(`Créer un nouveau lien pour « ${x.nom} » ? L'ancien lien ne fonctionnera plus.`)) return;
+try { await rpc("nouveau_lien_invite",{p_slug:S.slug,p_code:S.code,p_id:x.id}); toast("Nouveau lien créé ✓"); charger(); } catch(err){ alert(msgErr(err)); } }
+if (b.dataset.a === "suppr") { if (!confirm(`Supprimer « ${x.nom} » de la liste ? Son lien ne fonctionnera plus.${x.repondu ? " Sa réponse reste dans l'onglet Réponses." : ""}`)) return;
+try { await rpc("supprimer_invite",{p_slug:S.slug,p_code:S.code,p_id:x.id}); toast("Famille supprimée"); charger(); } catch(err){ alert(msgErr(err)); } }
+};
+$("#iFiltre").oninput = afficher; $("#iFiltreS").onchange = afficher; $("#iRafr").onclick = charger;
+$("#iCsv").onclick = () => {
+const lignes = [["Famille","Places","WhatsApp","Lien personnel","Réponse","Personnes"], ...L.map(x => [x.nom, x.places, x.telephone||"", lienInvite(x.jeton), x.repondu ? (x.presence ? "Présent" : "Absent") : "En attente", x.repondu && x.presence ? x.total : ""])];
+const csv = "﻿" + lignes.map(l => l.map(v => `"${String(v).replace(/"/g,'""')}"`).join(";")).join("\r\n");
+const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download = `invites-${S.slug}.csv`; a.click();
+};
+charger();
 }
 async function oReponses(){
 const p = rendrePanneau(`<div class="stats" id="stats"><div class="stat"><b>…</b><span>Chargement</span></div></div>
