@@ -127,6 +127,7 @@ const SB = { url: "https://vtizxpfxsozbotvkjsrg.supabase.co", cle: "sb_publishab
 const ICONES = {accueil:"Accueil",alliances:"Alliances",photo:"Appareil photo",cocktail:"Cocktail",micro:"Micro / discours",diner:"Dîner",musique:"Musique",lune:"Lune / fin",coeur:"Cœur",gateau:"Gâteau",etoile:"Étoile",eglise:"Église",voiture:"Voiture",horloge:"Horloge",calendrier:"Calendrier",epingle:"Lieu"};
 const ERR = {CODE_INCORRECT:"Code d'accès incorrect.",LISTE_INVALIDE:"Liste invalide (500 familles maximum à la fois).",LIMITE_ATTEINTE:"Limite atteinte (1000 familles maximum).",CODE_MAITRE_INCORRECT:"Code maître incorrect.",ADRESSE_INVALIDE:"Adresse invalide : lettres minuscules, chiffres et tirets uniquement (3 à 60).",ADRESSE_DEJA_PRISE:"Cette adresse est déjà utilisée.",ADRESSE_RESERVEE:"Ce mot est réservé, choisissez une autre adresse.",NUMERO_INVALIDE:"Numéro invalide : indiquez le numéro complet avec l'indicatif (ex. +243 844 195 449).",CODE_CLIENT_TROP_COURT:"Le code client doit faire au moins 6 caractères.",CONFIG_TROP_GRANDE:"Contenu trop volumineux.",FORMAT_NON_ACCEPTE:"Format non accepté (JPG, PNG ou WEBP).",TAILLE_INVALIDE:"Photo trop lourde."};
 const $ = s => document.querySelector(s);
+const csvSur = v => { let t = String(v ?? ""); if (/^[=+\-@\t\r]/.test(t)) t = "'" + t; return t.replace(/"/g,'""'); };
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clone = o => JSON.parse(JSON.stringify(o));
 function toast(t){ const e=$("#toast"); e.textContent=t; e.classList.add("vu"); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove("vu"),2600); }
@@ -510,7 +511,7 @@ try { await rpc("supprimer_invite",{p_slug:S.slug,p_code:S.code,p_id:x.id}); toa
 $("#iFiltre").oninput = afficher; $("#iFiltreS").onchange = afficher; $("#iRafr").onclick = charger;
 $("#iCsv").onclick = () => {
 const lignes = [["Famille","Places","WhatsApp","Lien personnel","Réponse","Personnes"], ...L.map(x => [x.nom, x.places, x.telephone||"", lienInvite(x.jeton), x.repondu ? (x.presence ? "Présent" : "Absent") : "En attente", x.repondu && x.presence ? x.total : ""])];
-const csv = "﻿" + lignes.map(l => l.map(v => `"${String(v).replace(/"/g,'""')}"`).join(";")).join("\r\n");
+const csv = "﻿" + lignes.map(l => l.map(v => `"${csvSur(v)}"`).join(";")).join("\r\n");
 const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download = `invites-${S.slug}.csv`; a.click();
 };
 charger();
@@ -544,7 +545,7 @@ $("#filtre").oninput = afficher; $("#filtreP").onchange = afficher; $("#rafr").o
 $("#csv").onclick = () => {
 const R = S.reponses, cles = [...new Set(R.flatMap(r=>Object.keys(r.details||{})))];
 const lignes = [["Nom","Présence","Personnes","Téléphone",...cles,"Message","Reçu le"], ...R.map(r=>[r.nom, r.presence?"Présent":"Absent", r.presence?r.total:0, r.telephone||"", ...cles.map(k=>(r.details||{})[k]||""), r.message||"", new Date(r.created_at).toLocaleString("fr-FR")])];
-const csv = "﻿" + lignes.map(l=>l.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(";")).join("\r\n");
+const csv = "﻿" + lignes.map(l=>l.map(v=>`"${csvSur(v)}"`).join(";")).join("\r\n");
 const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"})); a.download = `reponses-${S.slug}.csv`; a.click();
 };
 charger();

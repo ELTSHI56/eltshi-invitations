@@ -413,7 +413,7 @@ ${(p.transport||p.hebergement||p.tenue)?`<div class="cartes">${p.transport?carte
 <p class="petit or" style="margin:10px 0 6px">Localisation</p>
 <h3>${esc(nom||"Lieu à confirmer")}</h3><p class="adr">${esc(adr||(nom?"":"Le lieu vous sera communiqué prochainement."))}</p>
 ${cible?`<a class="btn-noir" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(cible)}">${ico("epingle")}Obtenir l'itinéraire</a>`:""}</div>
-${cible?`<iframe title="Carte du lieu" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(cible)}&z=15&output=embed"></iframe>`:""}
+${cible?`<iframe title="Carte du lieu" loading="lazy" referrerpolicy="no-referrer" src="https://maps.google.com/maps?q=${encodeURIComponent(cible)}&z=15&output=embed"></iframe>`:""}
 </div></div></section>`;
 }
 function sGalerie(){
