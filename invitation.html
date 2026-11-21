@@ -378,7 +378,7 @@ ${x.date?`<p class="ligne">${ico("calendrier")}<span>${esc(fmtDate(x.date,{weekd
 ${x.heure?`<p class="ligne">${ico("horloge")}<span>${esc(x.heure.replace(":","h"))}</span></p>`:""}
 ${x.lieu||x.adresse?`<p class="ligne">${ico("epingle")}<span>${esc([x.lieu,x.adresse].filter(Boolean).join(" · "))}</span></p>`:""}
 ${!x.date&&!x.lieu?`<p class="ligne" style="font-style:italic;color:var(--doux)">Date et lieu bientôt communiqués.</p>`:""}
-${x.date?`<button type="button" class="bt-cal" data-cer="${(ce.liste||[]).indexOf(x)}">${ico("calendrier")}Ajouter au calendrier</button>`:""}</div>`).join("")}</div>
+</div>`).join("")}</div>
 </div></section>`;
 }
 function lierCeremonies(){
