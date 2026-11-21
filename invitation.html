@@ -87,6 +87,18 @@ section{padding:88px 22px;position:relative}
 #compte{text-align:center;overflow:hidden}
 #compte .grille-cpt{display:flex;justify-content:center;gap:clamp(10px,4vw,34px);margin-top:10px}
 .case{min-width:70px}
+.ceremonies{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-top:8px}
+.cer{background:#fff;border:1px solid var(--champ);padding:30px 24px 26px;text-align:center;position:relative}
+.cer::before{content:"";position:absolute;inset:6px;border:1px solid rgba(184,151,90,.25);pointer-events:none}
+.cer .rond{width:58px;height:58px;border-radius:50%;background:var(--noir);color:var(--or2);display:grid;place-items:center;margin:0 auto 14px}
+.cer .rond svg{width:26px;height:26px}
+.cer h3{font-family:var(--serif);font-weight:500;font-size:1.55rem;color:var(--noir);line-height:1.2}
+.cer .st{font-family:var(--sans);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--or);margin:6px 0 16px}
+.cer .ligne{display:flex;gap:10px;align-items:flex-start;justify-content:center;font-family:var(--sans);font-size:.92rem;color:var(--texte);margin:6px 0}
+.cer .ligne svg{width:17px;height:17px;color:var(--or);flex:none;margin-top:2px}
+.cer .bt-cal{margin-top:18px;font-family:var(--sans);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;background:none;border:1px solid var(--noir);color:var(--noir);padding:11px 18px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.cer .bt-cal svg{width:15px;height:15px}
+.cer .bt-cal:hover{background:var(--noir);color:#fff}
 .case b{display:block;font-weight:400;font-size:clamp(2.6rem,11vw,4.4rem);line-height:1;color:#fff;font-variant-numeric:tabular-nums}
 .case small{display:block;margin-top:10px;color:var(--or2);letter-spacing:.16em!important;font-size:.62rem!important}
 .case+.case{border-left:1px solid rgba(212,182,122,.3);padding-left:clamp(10px,4vw,34px)}
@@ -267,7 +279,9 @@ lit:'<path d="M3 19V6M3 14h18v5M21 14v-3a3 3 0 00-3-3h-7v6"/><circle cx="7" cy="
 epingle:'<path d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
 horloge:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
 calendrier:'<rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4"/>',
-cintre:'<path d="M12 7a2 2 0 112-2M12 7v1L3 15h18l-9-7"/>'
+cintre:'<path d="M12 7a2 2 0 112-2M12 7v1L3 15h18l-9-7"/>',
+famille:'<circle cx="8" cy="8" r="3"/><circle cx="16.5" cy="9" r="2.5"/><path d="M3 20v-1.5A4.5 4.5 0 017.5 14h1a4.5 4.5 0 014.5 4.5V20M14 20v-1a3.5 3.5 0 013.5-3.5h0A3.5 3.5 0 0121 19v1"/>',
+mairie:'<path d="M3 21h18M5 21V10M19 21V10M9 21v-6h6v6M3 10l9-6 9 6z"/><circle cx="12" cy="8" r="1"/>'
 };
 const ico = (n, cls="") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONES[n]||ICONES.coeur}</svg>`;
 const WA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2a8.2 8.2 0 01-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 01-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 00-.7.3 3 3 0 00-.9 2.2 5.1 5.1 0 001.1 2.7 11.7 11.7 0 004.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 001.8-1.3 2.2 2.2 0 00.2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>';
@@ -350,6 +364,32 @@ $("#cJ").textContent = pad(Math.floor(s/86400)); $("#cH").textContent = pad(Math
 $("#cM").textContent = pad(Math.floor(s%3600/60)); $("#cS").textContent = pad(s%60);
 };
 tic(); minuteur = setInterval(tic, 1000);
+}
+function sCeremonies(){
+const ce = g(C,"ceremonies",{}); if (ce.actif === false) return "";
+const L = (ce.liste||[]).filter(x => x && x.afficher !== false && (x.date || x.lieu || x.heure));
+if (!L.length) return "";
+const icone = {coutumier:"famille", civil:"mairie", religieux:"eglise"};
+return `<section id="ceremonies"><div class="cont">
+${entete(ce.petit||"Les cérémonies", esc(ce.titre||"Nos trois « oui »"), ce.sousTitre)}
+<div class="ceremonies">${L.map((x,i)=>`<div class="cer revele"><div class="rond">${ico(icone[x.type]||"alliances")}</div>
+<h3>${esc(x.nom||"")}</h3>${x.sousTitre?`<p class="st">${esc(x.sousTitre)}</p>`:`<p class="st"></p>`}
+${x.date?`<p class="ligne">${ico("calendrier")}<span>${esc(fmtDate(x.date,{weekday:"long",day:"numeric",month:"long",year:"numeric"}).replace(/^./,c=>c.toUpperCase()))}</span></p>`:""}
+${x.heure?`<p class="ligne">${ico("horloge")}<span>${esc(x.heure.replace(":","h"))}</span></p>`:""}
+${x.lieu||x.adresse?`<p class="ligne">${ico("epingle")}<span>${esc([x.lieu,x.adresse].filter(Boolean).join(" · "))}</span></p>`:""}
+${x.date?`<button type="button" class="bt-cal" data-cer="${(ce.liste||[]).indexOf(x)}">${ico("calendrier")}Ajouter au calendrier</button>`:""}</div>`).join("")}</div>
+</div></section>`;
+}
+function lierCeremonies(){
+document.querySelectorAll(".bt-cal[data-cer]").forEach(b => b.onclick = () => {
+const x = (g(C,"ceremonies.liste",[]))[+b.dataset.cer]; if (!x || !x.date) return;
+const j = x.date.replace(/-/g,""), h = (x.heure||"").replace(":","");
+const debut = h ? `DTSTART:${j}T${h}00` : `DTSTART;VALUE=DATE:${j}`;
+const fin = h ? `DTEND:${j}T${String(Math.min(23,+h.slice(0,2)+3)).padStart(2,"0")}${h.slice(2)}00` : `DTEND;VALUE=DATE:${j}`;
+const noms = `${g(C,"couple.prenom1")} & ${g(C,"couple.prenom2")}`;
+const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//EL TSHI DIGIT//Invitation//FR","BEGIN:VEVENT",`UID:${Date.now()}-${b.dataset.cer}@eltshidigit`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,"").split(".")[0]}Z`,debut,fin,`SUMMARY:${x.nom} — ${noms}`,`LOCATION:${[x.lieu,x.adresse].filter(Boolean).join(", ")}`,"END:VEVENT","END:VCALENDAR"].join("\r\n");
+const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([ics],{type:"text/calendar"})); a.download = (x.nom||"ceremonie").toLowerCase().replace(/[^a-z0-9]+/gi,"-") + ".ics"; a.click();
+});
 }
 function sProgramme(){
 const et = g(C,"programme.etapes",[]); if (!et.length) return "";
@@ -507,8 +547,8 @@ return `<footer>
 }
 function rendre(){
 rendreCouverture();
-$("#app").innerHTML = sPresentation() + sCompte() + sProgramme() + sPratique() + sGalerie() + sRsvp() + sFinale() + sPied();
-formulaireRsvp(); lancerCompte();
+$("#app").innerHTML = sPresentation() + sCompte() + sCeremonies() + sProgramme() + sPratique() + sGalerie() + sRsvp() + sFinale() + sPied();
+formulaireRsvp(); lancerCompte(); lierCeremonies();
 const msg = (g(C,"partage.message") || "Découvrez notre invitation :") + " " + lienPage();
 const wa = "https://wa.me/?text=" + encodeURIComponent(msg);
 $("#pWa").href = wa; $("#flottant").href = wa; $("#flottant").innerHTML = WA;

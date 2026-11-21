@@ -160,7 +160,7 @@ finally{ b.disabled=false; }
 }
 $("#deco").onclick = () => { if(S.sale && !confirm("Des modifications ne sont pas enregistrées. Quitter quand même ?")) return; try{sessionStorage.removeItem("adm");}catch{} location.href = location.pathname; };
 window.addEventListener("beforeunload", e => { if(S.sale){ e.preventDefault(); e.returnValue=""; } });
-const ONGLETS = [["textes","Textes"],["programme","Programme"],["infos","Lieu & infos"],["photos","Photos"],["formulaire","Formulaire"],["invites","Invités"],["reponses","Réponses"],["reglages","Partage & réglages"]];
+const ONGLETS = [["textes","Textes"],["programme","Programme"],["ceremonies","Cérémonies"],["infos","Lieu & infos"],["photos","Photos"],["formulaire","Formulaire"],["invites","Invités"],["reponses","Réponses"],["reglages","Partage & réglages"]];
 function demarrerUI(){
 $("#connexion").hidden = true; $("#ui").hidden = false;
 $("#hTitre").textContent = S.ev.titre; $("#hSlug").textContent = "/" + S.slug + (S.maitre ? " · accès maître" : "");
@@ -177,7 +177,7 @@ function ouvrirOnglet(k){
 S.onglet = k;
 document.querySelectorAll("#onglets button").forEach(b => b.classList.toggle("actif", b.dataset.o===k));
 $("#bas").hidden = ["reponses","invitations","invites"].includes(k);
-({textes:oTextes, programme:oProgramme, infos:oInfos, photos:oPhotos, formulaire:oFormulaire, reponses:oReponses, invites:oInvites, reglages:oReglages, invitations:oInvitations}[k] || oTextes)();
+({textes:oTextes, programme:oProgramme, ceremonies:oCeremonies, infos:oInfos, photos:oPhotos, formulaire:oFormulaire, reponses:oReponses, invites:oInvites, reglages:oReglages, invitations:oInvitations}[k] || oTextes)();
 }
 const lienOfficiel = () => location.origin + "/" + S.slug + (S.acces && S.acces.protege ? "?k=" + S.acces.cle : "");
 const srcApercu = () => "/" + S.slug + "?direct=1" + (S.acces && S.acces.cle ? "&k=" + S.acces.cle : "");
@@ -240,6 +240,26 @@ ${champ("finale.script","Mot en calligraphie")}</div>
 <fieldset><legend>Partage</legend>
 ${champ("partage.message","Message envoyé avec le lien WhatsApp","textarea")}${champ("meta.titreOnglet","Titre de l'onglet du navigateur")}
 </fieldset>`);
+}
+const CER_DEF = [{type:"coutumier",nom:"Mariage coutumier",sousTitre:"La dot et la bénédiction des familles"},{type:"civil",nom:"Mariage civil",sousTitre:"À la maison communale"},{type:"religieux",nom:"Mariage religieux",sousTitre:"Bénédiction nuptiale"}];
+function oCeremonies(){
+if (!get(S.cfg,"ceremonies") || typeof S.cfg.ceremonies !== "object") set(S.cfg,"ceremonies",{});
+const ce = S.cfg.ceremonies;
+if (!Array.isArray(ce.liste)) ce.liste = [];
+CER_DEF.forEach(d => { if (!ce.liste.find(x => x && x.type === d.type)) ce.liste.push({...d, afficher:true, date:"", heure:"", lieu:"", adresse:""}); });
+const p = rendrePanneau(`<fieldset><legend>Section « Cérémonies »</legend>
+<label style="display:flex;gap:10px;align-items:center;cursor:pointer;margin:6px 0 12px"><input type="checkbox" id="cerActif" style="width:auto" ${ce.actif===false?"":"checked"}> <b>Afficher la section dans l'invitation</b></label>
+${champ("ceremonies.titre","Titre de la section","text","Vide = Nos trois « oui »")}
+${champ("ceremonies.sousTitre","Petite phrase sous le titre (facultatif)")}
+<p class="aide">La section apparaît juste après le compte à rebours. Une cérémonie sans date ni lieu ne s'affiche pas.</p></fieldset>
+${ce.liste.map((x,i)=>`<fieldset><legend>${esc(x.nom||"Cérémonie")}</legend>
+<label style="display:flex;gap:8px;align-items:center;cursor:pointer;margin:4px 0 10px"><input type="checkbox" class="cerAff" data-i="${i}" style="width:auto" ${x.afficher===false?"":"checked"}> Afficher cette cérémonie</label>
+<div class="deux">${champ(`ceremonies.liste.${i}.nom`,"Nom")}${champ(`ceremonies.liste.${i}.sousTitre`,"Petite phrase (facultatif)")}</div>
+<div class="deux">${champ(`ceremonies.liste.${i}.date`,"Date","date")}${champ(`ceremonies.liste.${i}.heure`,"Heure","time")}</div>
+<div class="deux">${champ(`ceremonies.liste.${i}.lieu`,"Lieu","text","Ex. : Maison communale de la Makiso")}${champ(`ceremonies.liste.${i}.adresse`,"Adresse ou quartier (facultatif)","text","Ex. : Kisangani")}</div>
+</fieldset>`).join("")}`);
+$("#cerActif").onchange = e => { ce.actif = e.target.checked; modifie(); };
+p.querySelectorAll(".cerAff").forEach(c => c.onchange = () => { ce.liste[+c.dataset.i].afficher = c.checked; modifie(); });
 }
 function oProgramme(){
 if (!Array.isArray(get(S.cfg,"programme.etapes"))) set(S.cfg,"programme.etapes",[]);
